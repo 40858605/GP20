@@ -134,7 +134,51 @@ Retaliation against anyone who reports a concern in good faith is not acceptable
 
 ---
 
-## 10. Scope
+## 10. Rules for Assessment Mark Distribution
+
+As this is a group assessment, all members are expected to contribute fairly and responsibly. Individual assessment marks may be distributed based on the following rules:
+
+- Members are expected to accept the final mark distribution agreed by the team, provided that the distribution is based on fair and documented contribution.
+
+- Marks should reflect the level and quality of each member's actual contribution to the project.
+
+- Members who complete a greater proportion of important or difficult tasks may receive recognition for their higher level of contribution.
+
+- Members are expected to complete their assigned tasks within the agreed deadlines. Late submissions or repeated delays may affect the assessment contribution considered for that member.
+
+- Work submitted on time and in accordance with the agreed requirements should be considered more favourably than work that is repeatedly late or requires significant correction by other members.
+
+- The quality, completeness, organisation, and cleanliness of submitted work should be considered when assessing contribution.
+
+- Members should ensure that their code, documentation, reports, and other deliverables are clear, maintainable, properly organised, and free from unnecessary errors.
+
+- Members are expected to communicate properly with the team regarding their progress, problems, delays, and responsibilities.
+
+- Failure to communicate about an assigned task, particularly when a deadline may not be met, may negatively affect the member's contribution assessment.
+
+- Active participation in meetings, discussions, planning, code reviews, testing, and problem-solving should be considered as part of a member's overall contribution.
+
+- GitHub activity, including issues, commits, pull requests, code reviews, and project-board tasks, may be used as evidence when evaluating individual contributions.
+
+- Members should not make unnecessary commits, duplicate work, or perform meaningless activities solely to increase the appearance of their contribution.
+
+- Members must not claim another member's work as their own or take credit for work they did not complete.
+
+- If a member substantially relies on another member to complete, correct, or finish their assigned work, this may be considered when assessing their contribution.
+
+- Members should raise concerns about contribution, deadlines, or responsibilities before the final assessment where possible rather than waiting until submission.
+
+- Any disagreement about mark distribution should be discussed professionally and resolved using available project evidence.
+
+- No member may unilaterally change another member's agreed contribution or assessment allocation without team discussion.
+
+- The final distribution should be based on contribution, responsibility, quality of work, timeliness, communication, teamwork, and available evidence.
+
+- These rules are intended to support a fair assessment process and do not override the official assessment regulations of the university.
+
+---
+
+## 11. Scope
 
 This Code of Conduct applies to all project-related activities, including but not limited to:
 
@@ -153,7 +197,7 @@ This Code of Conduct applies whether the activity takes place within the GitHub 
 
 ---
 
-## 11. Contributor Responsibilities
+## 12. Contributor Responsibilities
 
 Everyone participating in the project shares responsibility for maintaining a respectful, secure, and collaborative environment.
 
@@ -168,7 +212,7 @@ Contributors should:
 
 ---
 
-## 12. Questions and Contact
+## 13. Questions and Contact
 
 Questions or concerns regarding this Code of Conduct should be directed to the project maintainer through the communication channels provided by the project.
 
@@ -176,7 +220,7 @@ For security vulnerabilities, contributors should use the project's designated s
 
 ---
 
-## 13. Acknowledgement
+## 14. Acknowledgement
 
 By contributing to or participating in this project, individuals agree to follow this Code of Conduct and help maintain a respectful, professional, secure, and collaborative environment.
 
