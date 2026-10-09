@@ -3,6 +3,8 @@ package com.napier.sem;
 import report.CountryReports;
 import java.util.List;
 import java.util.Scanner;
+import com.napier.sem.City;
+import report.CityReports;
 
 public class App {
 
@@ -17,6 +19,7 @@ public class App {
         }
 
         CountryReports countryReports = new CountryReports();
+        CityReports cityReports = new CityReports();
         //put ur own objects for reports here <---
         
         Scanner scanner = new Scanner(System.in);
@@ -28,9 +31,11 @@ public class App {
             System.out.println("2. All countries in a continent by population (Requires Continent)");
             System.out.println("3. Most populated countries in the world");
             System.out.println("4. Most populated countries in a continent");
-            //enter your reports name here, number 5 to 10 in order <---
+            System.out.println("5. All cities in a country by population");
+            System.out.println("6. All cities in a district by population");
+            //enter your reports name here, number 7 to 10 in order <---
             System.out.println("0. Exit");
-            System.out.print("Select an option (0-10): ");
+            System.out.print("Select an option (0-6): ");
 
             String input = scanner.nextLine().trim();
             int choice;
@@ -128,6 +133,44 @@ public class App {
                         }
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input. Please enter a valid number.");
+                    }
+                    break;
+                }
+
+                case 5: {
+                    System.out.print("Enter country name: ");
+                    String countryName = scanner.nextLine().trim();
+
+                    List<City> cities = cityReports.getCitiesInCountryByPopulation(
+                            db.getConnection(), countryName);
+
+                    if (cities.isEmpty()) {
+                        System.out.println("No cities found for country: " + countryName);
+                    } else {
+                        System.out.printf("%-35s %-35s %-25s %-12s%n",
+                                "City", "Country", "District", "Population");
+                        for (City city : cities) {
+                            System.out.println(city);
+                        }
+                    }
+                    break;
+                }
+
+                case 6: {
+                    System.out.print("Enter district name: ");
+                    String districtName = scanner.nextLine().trim();
+
+                    List<City> cities = cityReports.getCitiesInDistrictByPopulation(
+                            db.getConnection(), districtName);
+
+                    if (cities.isEmpty()) {
+                        System.out.println("No cities found for district: " + districtName);
+                    } else {
+                        System.out.printf("%-35s %-35s %-25s %-12s%n",
+                                "City", "Country", "District", "Population");
+                        for (City city : cities) {
+                            System.out.println(city);
+                        }
                     }
                     break;
                 }
