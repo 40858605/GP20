@@ -21,7 +21,7 @@ public class DatabaseHandler {
 
         String dbHost = System.getenv("DB_HOST");
         if (dbHost == null || dbHost.isEmpty()) {
-            dbHost = "localhost:3306";
+            dbHost = "localhost:3307";
         }
 
         int retries = 30;
