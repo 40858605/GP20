@@ -1,4 +1,3 @@
-
 package report;
 
 import com.napier.sem.City;
