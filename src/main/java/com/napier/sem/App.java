@@ -16,22 +16,6 @@ public class App {
             return;
         }
 
-        PopulationReports popReports = new PopulationReports();
-
-        // ================= TEMPORARY FEATURE BRANCH TEST =================
-        System.out.println("=== TEST 1: All Countries in World ===");
-        List<Country> allCountries = popReports.getAllCountriesByPopulation(db.getConnection());
-        for (int i = 0; i < Math.min(5, allCountries.size()); i++) {
-            System.out.println(allCountries.get(i));
-        }
-
-        System.out.println("\n=== TEST 2: Countries in Europe ===");
-        List<Country> europeCountries = popReports.getCountriesInContinentByPopulation(db.getConnection(), "Europe");
-        for (int i = 0; i < Math.min(5, europeCountries.size()); i++) {
-            System.out.println(europeCountries.get(i));
-        }
-        // =================================================================
-
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
