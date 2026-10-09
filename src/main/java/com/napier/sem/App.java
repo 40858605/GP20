@@ -1,6 +1,6 @@
 package com.napier.sem;
 
-import report.PopulationReports;
+import report.CountryReports;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,6 +16,9 @@ public class App {
             return;
         }
 
+        CountryReports countryReports = new CountryReports();
+        //put ur own objects for reports here <---
+        
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
@@ -23,14 +26,7 @@ public class App {
             System.out.println("\n=================== SPRINT 1 REPORTS MENU ===================");
             System.out.println("1. All countries in world by population (No input)");
             System.out.println("2. All countries in a continent by population (Requires Continent)");
-            System.out.println("3. Top N populated countries in world (Requires N)");
-            System.out.println("4. Top N populated countries in a continent (Requires Continent & N)");
-            System.out.println("5. All cities in a country by population (Requires Country)");
-            System.out.println("6. All cities in a district by population (Requires District)");
-            System.out.println("7. Top N populated cities in a country (Requires Country & N)");
-            System.out.println("8. Top N populated cities in a district (Requires District & N)");
-            System.out.println("9. Top N populated capital cities in world (Requires N)");
-            System.out.println("10. Top N populated capital cities in a continent (Requires Continent & N)");
+            //enter your reports name here, number 3 to 10 in order <---
             System.out.println("0. Exit");
             System.out.print("Select an option (0-10): ");
 
@@ -47,7 +43,7 @@ public class App {
             switch (choice) {
                 case 1:
                     System.out.println("\nExecuting: All countries in world by population...\n");
-                    List<Country> worldCountries = popReports.getAllCountriesByPopulation(db.getConnection());
+                    List<Country> worldCountries = countryReports.getAllCountriesByPopulation(db.getConnection());
                     if (worldCountries.isEmpty()) {
                         System.out.println("No countries found.");
                     } else {
@@ -64,7 +60,7 @@ public class App {
                     System.out.print("Enter Continent (e.g., Europe, Asia): ");
                     String continent1 = scanner.nextLine().trim();
                     System.out.println("\nExecuting: All countries in " + continent1 + "...\n");
-                    List<Country> continentCountries = popReports.getCountriesInContinentByPopulation(db.getConnection(), continent1);
+                    List<Country> continentCountries = countryReports.getCountriesInContinentByPopulation(db.getConnection(), continent1);
                     if (continentCountries.isEmpty()) {
                         System.out.println("No countries found for continent: " + continent1);
                     } else {
