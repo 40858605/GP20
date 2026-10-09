@@ -1,4 +1,4 @@
-package com.napier.sem.reports;
+package report;
 
 import com.napier.sem.Country;
 import com.napier.sem.PopulationBreakdown;

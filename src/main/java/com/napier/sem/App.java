@@ -1,6 +1,6 @@
 package com.napier.sem;
 
-import com.napier.sem.reports.PopulationReports;
+import report.PopulationReports;
 import java.util.List;
 import java.util.Scanner;
 
