@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CountryReports {
 
-    // 1. All countries in the world by population (largest to smallest) [Sprint 1]
+    // 1. All countries in the world by population (largest to smallest)
     public List<Country> getAllCountriesByPopulation(Connection con) {
         List<Country> countries = new ArrayList<>();
         String sql = "SELECT c.Code, c.Name, c.Continent, c.Region, c.Population, ci.Name AS Capital " +
@@ -31,7 +31,7 @@ public class CountryReports {
         return countries;
     }
 
-    // 2. All countries in a continent by population (largest to smallest) [Sprint 1]
+    // 2. All countries in a continent by population (largest to smallest)
     public List<Country> getCountriesInContinentByPopulation(Connection con, String continent) {
         List<Country> countries = new ArrayList<>();
         String sql = "SELECT c.Code, c.Name, c.Continent, c.Region, c.Population, ci.Name AS Capital " +
