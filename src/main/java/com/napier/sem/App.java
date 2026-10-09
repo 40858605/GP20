@@ -1,69 +1,24 @@
 package com.napier.sem;
 
-import java.sql.*;
+import report.CountryReports;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
-    private Connection con = null;
-
-    public Connection getConnection() {
-        return con;
-    }
-
-    public void connect() {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Could not load SQL driver");
-            System.exit(-1);
-        }
-
-        // Get DB host from environment variable (Docker), or fallback to localhost (IDE/Local)
-        String dbHost = System.getenv("DB_HOST");
-        if (dbHost == null || dbHost.isEmpty()) {
-            dbHost = "localhost:3306";
-        }
-
-        int retries = 30;
-        for (int i = 0; i < retries; ++i) {
-            System.out.println("Connecting to database (" + dbHost + ") Attempt " + (i + 1) + "...");
-            try {
-                Thread.sleep(2000);
-                con = DriverManager.getConnection(
-                        "jdbc:mysql://" + dbHost + "/world?allowPublicKeyRetrieval=true&useSSL=false",
-                        "root",
-                        "example"
-                );
-                System.out.println("Successfully connected to 'world' database!");
-                break;
-            } catch (SQLException sqle) {
-                System.out.println("Failed to connect attempt " + (i + 1) + ": " + sqle.getMessage());
-            } catch (InterruptedException ie) {
-                System.out.println("Thread interrupted.");
-            }
-        }
-    }
-
-    public void disconnect() {
-        if (con != null) {
-            try {
-                con.close();
-                System.out.println("Disconnected successfully.");
-            } catch (Exception e) {
-                System.out.println("Error closing connection: " + e.getMessage());
-            }
-        }
-    }
 
     public static void main(String[] args) {
-        App app = new App();
-        app.connect();
+        // Instantiate Database Handler
+        DatabaseHandler db = new DatabaseHandler();
+        db.connect();
 
-        if (app.getConnection() == null) {
+        if (db.getConnection() == null) {
             System.out.println("Could not establish a database connection. Exiting...");
             return;
         }
 
+        CountryReports countryReports = new CountryReports();
+        //put ur own objects for reports here <---
+        
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
@@ -71,14 +26,9 @@ public class App {
             System.out.println("\n=================== SPRINT 1 REPORTS MENU ===================");
             System.out.println("1. All countries in world by population (No input)");
             System.out.println("2. All countries in a continent by population (Requires Continent)");
-            System.out.println("3. Top N populated countries in world (Requires N)");
-            System.out.println("4. Top N populated countries in a continent (Requires Continent & N)");
-            System.out.println("5. All cities in a country by population (Requires Country)");
-            System.out.println("6. All cities in a district by population (Requires District)");
-            System.out.println("7. Top N populated cities in a country (Requires Country & N)");
-            System.out.println("8. Top N populated cities in a district (Requires District & N)");
-            System.out.println("9. Top N populated capital cities in world (Requires N)");
-            System.out.println("10. Top N populated capital cities in a continent (Requires Continent & N)");
+            System.out.println("3. Most populated countries in the world");
+            System.out.println("4. Most populated countries in a continent");
+            //enter your reports name here, number 5 to 10 in order <---
             System.out.println("0. Exit");
             System.out.print("Select an option (0-10): ");
 
@@ -94,72 +44,93 @@ public class App {
 
             switch (choice) {
                 case 1:
-                    System.out.println("\nExecuting: All countries in world by population...");
-                    // CountryReport.printAllCountriesByPopulation(app.getConnection());
+                    System.out.println("\nExecuting: All countries in world by population...\n");
+                    List<Country> worldCountries = countryReports.getAllCountriesByPopulation(db.getConnection());
+                    if (worldCountries.isEmpty()) {
+                        System.out.println("No countries found.");
+                    } else {
+                        System.out.println(String.format("%-5s %-45s %-20s %-25s %-12s %-20s",
+                                "Code", "Name", "Continent", "Region", "Population", "Capital"));
+                        System.out.println("------------------------------------------------------------------------------------------------------------------------");
+                        for (Country c : worldCountries) {
+                            System.out.println(c);
+                        }
+                    }
                     break;
 
                 case 2:
                     System.out.print("Enter Continent (e.g., Europe, Asia): ");
-                    String continent1 = scanner.nextLine();
-                    System.out.println("Executing: All countries in " + continent1 + "...");
-                    // CountryReport.printCountriesInContinent(app.getConnection(), continent1);
+                    String continent1 = scanner.nextLine().trim();
+                    System.out.println("\nExecuting: All countries in " + continent1 + "...\n");
+                    List<Country> continentCountries = countryReports.getCountriesInContinentByPopulation(db.getConnection(), continent1);
+                    if (continentCountries.isEmpty()) {
+                        System.out.println("No countries found for continent: " + continent1);
+                    } else {
+                        System.out.println(String.format("%-5s %-45s %-20s %-25s %-12s %-20s",
+                                "Code", "Name", "Continent", "Region", "Population", "Capital"));
+                        System.out.println("------------------------------------------------------------------------------------------------------------------------");
+                        for (Country c : continentCountries) {
+                            System.out.println(c);
+                        }
+                    }
                     break;
 
-                case 3:
-                    System.out.print("Enter N (number of top countries): ");
-                    int topN1 = Integer.parseInt(scanner.nextLine().trim());
-                    // CountryReport.printTopNCountriesInWorld(app.getConnection(), topN1);
-                    break;
+                case 3: {
+                    System.out.print("Enter the number: ");
+                    try {
+                        int n = Integer.parseInt(scanner.nextLine().trim());
 
-                case 4:
-                    System.out.print("Enter Continent: ");
-                    String continent2 = scanner.nextLine();
-                    System.out.print("Enter N: ");
-                    int topN2 = Integer.parseInt(scanner.nextLine().trim());
-                    // CountryReport.printTopNCountriesInContinent(app.getConnection(), continent2, topN2);
-                    break;
+                        if (n <= 0) {
+                            System.out.println("Number must be greater than zero.");
+                            break;
+                        }
 
-                case 5:
-                    System.out.print("Enter Country name: ");
-                    String countryName1 = scanner.nextLine();
-                    // CityReport.printCitiesInCountry(app.getConnection(), countryName1);
-                    break;
+                        List<Country> countries =
+                                countryReports.getTopNCountriesByPopulation(
+                                        db.getConnection(), n);
 
-                case 6:
-                    System.out.print("Enter District name: ");
-                    String districtName1 = scanner.nextLine();
-                    // CityReport.printCitiesInDistrict(app.getConnection(), districtName1);
+                        if (countries.isEmpty()) {
+                            System.out.println("No countries found.");
+                        } else {
+                            for (Country c : countries) {
+                                System.out.println(c);
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a valid number.");
+                    }
                     break;
+                }
 
-                case 7:
-                    System.out.print("Enter Country name: ");
-                    String countryName2 = scanner.nextLine();
-                    System.out.print("Enter N: ");
-                    int topN3 = Integer.parseInt(scanner.nextLine().trim());
-                    // CityReport.printTopNCitiesInCountry(app.getConnection(), countryName2, topN3);
-                    break;
+                case 4: {
+                    System.out.print("Enter continent (e.g., Europe, Asia): ");
+                    String continent = scanner.nextLine().trim();
 
-                case 8:
-                    System.out.print("Enter District name: ");
-                    String districtName2 = scanner.nextLine();
-                    System.out.print("Enter N: ");
-                    int topN4 = Integer.parseInt(scanner.nextLine().trim());
-                    // CityReport.printTopNCitiesInDistrict(app.getConnection(), districtName2, topN4);
-                    break;
+                    System.out.print("Enter the number: ");
+                    try {
+                        int n = Integer.parseInt(scanner.nextLine().trim());
 
-                case 9:
-                    System.out.print("Enter N: ");
-                    int topN5 = Integer.parseInt(scanner.nextLine().trim());
-                    // CapitalCityReport.printTopNCapitalCitiesInWorld(app.getConnection(), topN5);
-                    break;
+                        if (continent.isEmpty() || n <= 0) {
+                            System.out.println("Enter a valid continent and number greater than zero.");
+                            break;
+                        }
 
-                case 10:
-                    System.out.print("Enter Continent: ");
-                    String continent3 = scanner.nextLine();
-                    System.out.print("Enter N: ");
-                    int topN6 = Integer.parseInt(scanner.nextLine().trim());
-                    // CapitalCityReport.printTopNCapitalCitiesInContinent(app.getConnection(), continent3, topN6);
+                        List<Country> countries =
+                                countryReports.getTopNCountriesInContinentByPopulation(
+                                        db.getConnection(), continent, n);
+
+                        if (countries.isEmpty()) {
+                            System.out.println("No countries found for continent: " + continent);
+                        } else {
+                            for (Country c : countries) {
+                                System.out.println(c);
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a valid number.");
+                    }
                     break;
+                }
 
                 case 0:
                     running = false;
@@ -167,11 +138,11 @@ public class App {
                     break;
 
                 default:
-                    System.out.println("Invalid option. Choose 0-10.");
+                    System.out.println("Invalid option or feature not yet implemented.");
             }
         }
 
         scanner.close();
-        app.disconnect();
+        db.disconnect();
     }
 }
