@@ -73,6 +73,71 @@ public class CityReports {
         return cities;
     }
 
+    // Task #17: Top N cities in the world by population
+    public List<City> getTopNCitiesByPopulation(
+            Connection con, int n) {
+
+        List<City> cities = new ArrayList<>();
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "ORDER BY ci.Population DESC, ci.Name ASC " +
+                        "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #17: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Task #18: Top N cities in a continent by population
+    public List<City> getTopNCitiesInContinentByPopulation(
+            Connection con, String continent, int n) {
+
+        List<City> cities = new ArrayList<>();
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "WHERE co.Continent = ? " +
+                        "ORDER BY ci.Population DESC, ci.Name ASC " +
+                        "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, continent);
+            stmt.setInt(2, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #18: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+
     // Convert a database row into a City object
     private City mapCity(ResultSet rset) throws SQLException {
         return new City(
