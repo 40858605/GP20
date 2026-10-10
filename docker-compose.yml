@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   db:
@@ -6,15 +5,16 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: example
+      MYSQL_ROOT_HOST: "%"
       MYSQL_DATABASE: world
     ports:
-      - "3306:3306" # Maps MySQL port to your host machine so IDE can connect directly
+      - "3308:3306"
 
   app:
     build: .
     depends_on:
       - db
     environment:
-      DB_HOST: "db:3306" # Injects the container database address for Docker runs
-    stdin_open: true # Enables standard input (kbd input)
-    tty: true        # Allocates a pseudo-TTY terminal
+      DB_HOST: "db:3306"
+    stdin_open: true
+    tty: true
