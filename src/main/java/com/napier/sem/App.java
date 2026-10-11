@@ -39,8 +39,14 @@ public class App {
             System.out.println("6. All cities in a district by population");
             System.out.println("7. Top N populated cities in a country");
             System.out.println("8. Top N populated cities in a district");
+            System.out.println("9. Top N capital cities in the world (Report 25)");
+            System.out.println("10. Top N capital cities in a continent (Report 26)");
+            System.out.println("11. Top N capital cities in a region (Report 27)");
+            System.out.println("12. Total population of the world (Report 28)");
+            System.out.println("13. Total population of a continent (Report 29)");
+            System.out.println("14. Major language speakers and world population percentage (Report 30)");
             System.out.println("0. Exit");
-            System.out.print("Select an option (0-8): ");
+            System.out.print("Select an option (0-14): ");
 
             String input = scanner.nextLine().trim();
             int choice;
@@ -49,7 +55,7 @@ public class App {
                 choice = Integer.parseInt(input);
             } catch (NumberFormatException e) {
                 System.out.println(
-                        "Invalid input. Please enter a valid number (0-8).");
+                        "Invalid input. Please enter a valid number (0-14).");
                 continue;
             }
 
@@ -288,6 +294,113 @@ public class App {
                     break;
                 }
 
+                // Report #25: Top N capital cities in the world
+                case 9: {
+                    try {
+                        System.out.print("Enter the number of capital cities: ");
+                        int n = Integer.parseInt(scanner.nextLine().trim());
+                        if (n <= 0) {
+                            System.out.println("Number must be greater than zero.");
+                            break;
+                        }
+                        CityReports.printTopNCapitalCitiesInWorld(
+                                db.getConnection(), n);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid number.");
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("Error running Report #25: " + e.getMessage());
+                    }
+                    break;
+                }
+
+                // Report #26: Top N capital cities in a continent
+                case 10: {
+                    System.out.print("Enter continent (e.g., Asia, Europe): ");
+                    String continentName = scanner.nextLine().trim();
+                    try {
+                        System.out.print("Enter the number of capital cities: ");
+                        int n = Integer.parseInt(scanner.nextLine().trim());
+                        if (continentName.isEmpty() || n <= 0) {
+                            System.out.println("Enter a valid continent and a number greater than zero.");
+                            break;
+                        }
+                        CityReports.printTopNCapitalCitiesInContinent(
+                                db.getConnection(), continentName, n);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid number.");
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("Error running Report #26: " + e.getMessage());
+                    }
+                    break;
+                }
+
+                // Report #27: Top N capital cities in a region
+                case 11: {
+                    System.out.print("Enter region (e.g., Southeast Asia): ");
+                    String regionName = scanner.nextLine().trim();
+                    try {
+                        System.out.print("Enter the number of capital cities: ");
+                        int n = Integer.parseInt(scanner.nextLine().trim());
+                        if (regionName.isEmpty() || n <= 0) {
+                            System.out.println("Enter a valid region and a number greater than zero.");
+                            break;
+                        }
+                        CityReports.printTopNCapitalCitiesInRegion(
+                                db.getConnection(), regionName, n);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid number.");
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("Error running Report #27: " + e.getMessage());
+                    }
+                    break;
+                }
+
+                // Report #28: Total population of the world
+                case 12: {
+                    try {
+                        long total = countryReports.getTotalWorldPopulation(
+                                db.getConnection());
+                        System.out.println("\n===== TOTAL WORLD POPULATION =====");
+                        System.out.printf("World Population: %,d%n", total);
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("Error running Report #28: " + e.getMessage());
+                    }
+                    break;
+                }
+
+                // Report #29: Total population of a continent
+                case 13: {
+                    System.out.print("Enter continent (e.g., Asia, Europe, Africa): ");
+                    String continentName = scanner.nextLine().trim();
+                    if (continentName.isEmpty()) {
+                        System.out.println("Continent cannot be empty.");
+                        break;
+                    }
+                    try {
+                        long total = countryReports.getTotalContinentPopulation(
+                                db.getConnection(), continentName);
+                        if (total == 0L) {
+                            System.out.println("No population data found for continent: " + continentName);
+                        } else {
+                            System.out.println("\n===== TOTAL POPULATION OF " + continentName.toUpperCase() + " =====");
+                            System.out.printf("Continent Population: %,d%n", total);
+                        }
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("Error running Report #29: " + e.getMessage());
+                    }
+                    break;
+                }
+
+                // Report #30: Major language speakers and world population percentage
+                case 14: {
+                    try {
+                        CountryReports.printMajorLanguageStatistics(db.getConnection());
+                    } catch (java.sql.SQLException e) {
+                        System.out.println("Error running Report #30: " + e.getMessage());
+                    }
+                    break;
+                }
+
                 case 0:
                     running = false;
                     System.out.println("Exiting application...");
@@ -295,7 +408,7 @@ public class App {
 
                 default:
                     System.out.println(
-                            "Invalid option. Please select 0-8.");
+                            "Invalid option. Please select 0-14.");
             }
         }
         scanner.close();
