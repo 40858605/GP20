@@ -1,4 +1,3 @@
-
 name: CI Workflow for World Database App
 
 on:
@@ -29,7 +28,7 @@ jobs:
         run: mvn --batch-mode clean package
 
       - name: Run Docker Compose
-        run: docker compose up --build --abort-on-container-exit --exit-code-from app
+        run: echo "0" | docker compose up --build --abort-on-container-exit --exit-code-from app
 
       - name: Stop Docker Compose
         if: always()
