@@ -39,8 +39,8 @@ public class App {
             System.out.println("6. All cities in a district by population");
             System.out.println("7. Most populated cities in a country");
             System.out.println("8. Most populated cities in a district");
-            System.out.println("9. Most capital cities in the world");
-            System.out.println("10. Most capital cities in a continent");
+            System.out.println("9. Most populated capital cities in the world");
+            System.out.println("10. Most populated capital cities in a continent");
             System.out.println("0. Exit");
             System.out.print("Select an option (0-10): ");
 
