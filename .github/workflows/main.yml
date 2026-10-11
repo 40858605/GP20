@@ -10,6 +10,7 @@ jobs:
   build:
     name: Build & Test via Docker Compose
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
@@ -28,8 +29,8 @@ jobs:
         run: mvn --batch-mode clean package
 
       - name: Run Docker Compose
-        run: echo "0" | docker compose up --build --abort-on-container-exit --exit-code-from app
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build --abort-on-container-exit --exit-code-from app
 
       - name: Stop Docker Compose
         if: always()
-        run: docker compose down
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml down -v
