@@ -29,8 +29,8 @@ jobs:
         run: mvn --batch-mode clean package
 
       - name: Run Docker Compose
-        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml up --build --abort-on-container-exit --exit-code-from app
+        run: docker compose up --build --abort-on-container-exit --exit-code-from app
 
       - name: Stop Docker Compose
         if: always()
-        run: docker compose -f docker-compose.yml -f docker-compose.ci.yml down -v
+        run: docker compose down -v
