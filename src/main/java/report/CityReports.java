@@ -1,4 +1,3 @@
-
 package report;
 
 import com.napier.sem.City;
@@ -108,63 +107,6 @@ public class CityReports {
                 "Top " + n + " populated cities in " + continent);
     }
 
-    // Report #22: Top N populated cities in a region
-    public static void printTopNCitiesInRegion(
-            Connection conn, String region, int n)
-            throws SQLException {
-
-        String sql =
-                "SELECT ci.Name, co.Name AS Country, " +
-                        "ci.District, ci.Population " +
-                        "FROM city ci " +
-                        "JOIN country co ON ci.CountryCode = co.Code " +
-                        "WHERE co.Region = ? " +
-                        "ORDER BY ci.Population DESC, ci.Name ASC " +
-                        "LIMIT ?";
-
-        printQueryResults(
-                conn, sql, n, region,
-                "Top " + n + " populated cities in region " + region);
-    }
-
-    // Report #23: Top N populated cities in a country
-    public static void printTopNCitiesInCountry(
-            Connection conn, String countryName, int n)
-            throws SQLException {
-
-        String sql =
-                "SELECT ci.Name, co.Name AS Country, " +
-                        "ci.District, ci.Population " +
-                        "FROM city ci " +
-                        "JOIN country co ON ci.CountryCode = co.Code " +
-                        "WHERE co.Name = ? " +
-                        "ORDER BY ci.Population DESC, ci.Name ASC " +
-                        "LIMIT ?";
-
-        printQueryResults(
-                conn, sql, n, countryName,
-                "Top " + n + " populated cities in " + countryName);
-    }
-
-    // Report #24: Top N populated cities in a district
-    public static void printTopNCitiesInDistrict(
-            Connection conn, String districtName, int n)
-            throws SQLException {
-
-        String sql =
-                "SELECT ci.Name, co.Name AS Country, " +
-                        "ci.District, ci.Population " +
-                        "FROM city ci " +
-                        "JOIN country co ON ci.CountryCode = co.Code " +
-                        "WHERE ci.District = ? " +
-                        "ORDER BY ci.Population DESC, ci.Name ASC " +
-                        "LIMIT ?";
-
-        printQueryResults(
-                conn, sql, n, districtName,
-                "Top " + n + " populated cities in district " + districtName);
-    }
-
     // Report #25: Top N populated capital cities in the world
     public static void printTopNCapitalCitiesInWorld(
             Connection conn, int n) throws SQLException {
@@ -201,26 +143,6 @@ public class CityReports {
         printQueryResults(
                 conn, sql, n, continent,
                 "Top " + n + " populated capital cities in " + continent);
-    }
-
-    // Report #27: Top N populated capital cities in a region
-    public static void printTopNCapitalCitiesInRegion(
-            Connection conn, String region, int n)
-            throws SQLException {
-
-        String sql =
-                "SELECT ci.Name, co.Name AS Country, " +
-                        "ci.District, ci.Population " +
-                        "FROM city ci " +
-                        "JOIN country co ON ci.CountryCode = co.Code " +
-                        "WHERE co.Capital = ci.ID " +
-                        "AND co.Region = ? " +
-                        "ORDER BY ci.Population DESC, ci.Name ASC " +
-                        "LIMIT ?";
-
-        printQueryResults(
-                conn, sql, n, region,
-                "Top " + n + " populated capital cities in region " + region);
     }
 
     // Shared query method for all Top N reports
