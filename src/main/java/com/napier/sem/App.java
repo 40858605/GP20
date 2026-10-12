@@ -41,8 +41,9 @@ public class App {
             System.out.println("8. Most populated cities in a district");
             System.out.println("9. Most populated capital cities in the world");
             System.out.println("10. Most populated capital cities in a continent");
+            System.out.println("14. All countries in a region by population");
             System.out.println("0. Exit");
-            System.out.print("Select an option (0-10): ");
+            System.out.print("Select an option (0-14): ");
 
             if (!scanner.hasNextLine()) {
                 System.out.println("\nNo interactive input detected (running in CI). Exiting...");
@@ -56,7 +57,7 @@ public class App {
                 choice = Integer.parseInt(input);
             } catch (NumberFormatException e) {
                 System.out.println(
-                        "Invalid input. Please enter a valid number (0-10).");
+                        "Invalid input. Please enter a valid number (0-14).");
                 continue;
             }
 
@@ -333,6 +334,26 @@ public class App {
                     break;
                 }
 
+                // Issue #5: Urban vs. Rural population breakdown for each region
+                case 14: {
+                    System.out.println("\nExecuting: Urban vs. Rural population breakdown by region...\n");
+
+                    List<PopulationBreakdown> breakdownList = countryReports.getUrbanRuralByRegion(db.getConnection());
+
+                    if (breakdownList.isEmpty()) {
+                        System.out.println("No population breakdown data found.");
+                    } else {
+                        System.out.printf("%-30s %-15s %-18s %-18s %-12s %-12s%n",
+                                "Region", "Total Pop", "City Pop", "Rural Pop", "City %", "Rural %");
+                        System.out.println("---------------------------------------------------------------------------------------------------------");
+
+                        for (PopulationBreakdown pb : breakdownList) {
+                            System.out.println(pb);
+                        }
+                    }
+                    break;
+                }
+
                 case 0:
                     running = false;
                     System.out.println("Exiting application...");
@@ -340,7 +361,7 @@ public class App {
 
                 default:
                     System.out.println(
-                            "Invalid option. Please select 0-10.");
+                            "Invalid option. Please select a valid option from the menu.");
             }
         }
         scanner.close();
