@@ -1,10 +1,10 @@
 package com.napier.sem;
 
 import report.CountryReports;
+import report.CityReports;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
-import com.napier.sem.City;
-import report.CityReports;
 
 public class App {
 
@@ -20,25 +20,26 @@ public class App {
 
         CountryReports countryReports = new CountryReports();
         CityReports cityReports = new CityReports();
-        //put ur own objects for reports here <---
-        
+
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
         while (running) {
-            System.out.println("\n=================== SPRINT 1 REPORTS MENU ===================");
-            System.out.println("1. All countries in world by population (No input)");
-            System.out.println("2. All countries in a continent by population (Requires Continent)");
-            System.out.println("3. Most populated countries in the world");
-            System.out.println("4. Most populated countries in a continent");
+            System.out.println("\n=================== REPORTS MENU ===================");
+            System.out.println("1. All countries in world by population");
+            System.out.println("2. All countries in a continent by population");
+            System.out.println("3. Top N populated countries in the world");
+            System.out.println("4. Top N populated countries in a continent");
             System.out.println("5. All cities in a country by population");
             System.out.println("6. All cities in a district by population");
-            System.out.println("7. Top N cities in the world");
-            System.out.println("8. Top N cities in a continent");
-
-            //enter your reports name here, number 7 to 10 in order <---
+            System.out.println("7. Top N cities in the world by population");
+            System.out.println("8. Top N cities in a continent by population");
+            System.out.println("9. Top N populated cities in a country");
+            System.out.println("10. Top N populated cities in a district");
+            System.out.println("11. Top N populated capital cities in the world");
+            System.out.println("12. Top N populated capital cities in a continent");
             System.out.println("0. Exit");
-            System.out.print("Select an option (0-8): ");
+            System.out.print("Select an option (0-12): ");
 
             String input = scanner.nextLine().trim();
             int choice;
@@ -46,7 +47,7 @@ public class App {
             try {
                 choice = Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number (0-10).");
+                System.out.println("Invalid input. Please enter a valid number (0-12).");
                 continue;
             }
 
@@ -57,8 +58,8 @@ public class App {
                     if (worldCountries.isEmpty()) {
                         System.out.println("No countries found.");
                     } else {
-                        System.out.println(String.format("%-5s %-45s %-20s %-25s %-12s %-20s",
-                                "Code", "Name", "Continent", "Region", "Population", "Capital"));
+                        System.out.printf("%-5s %-45s %-20s %-25s %-12s %-20s%n",
+                                "Code", "Name", "Continent", "Region", "Population", "Capital");
                         System.out.println("------------------------------------------------------------------------------------------------------------------------");
                         for (Country c : worldCountries) {
                             System.out.println(c);
@@ -74,8 +75,8 @@ public class App {
                     if (continentCountries.isEmpty()) {
                         System.out.println("No countries found for continent: " + continent1);
                     } else {
-                        System.out.println(String.format("%-5s %-45s %-20s %-25s %-12s %-20s",
-                                "Code", "Name", "Continent", "Region", "Population", "Capital"));
+                        System.out.printf("%-5s %-45s %-20s %-25s %-12s %-20s%n",
+                                "Code", "Name", "Continent", "Region", "Population", "Capital");
                         System.out.println("------------------------------------------------------------------------------------------------------------------------");
                         for (Country c : continentCountries) {
                             System.out.println(c);
@@ -83,8 +84,8 @@ public class App {
                     }
                     break;
 
-                case 3: {
-                    System.out.print("Enter the number: ");
+                case 3:
+                    System.out.print("Enter the number of top countries: ");
                     try {
                         int n = Integer.parseInt(scanner.nextLine().trim());
 
@@ -93,9 +94,7 @@ public class App {
                             break;
                         }
 
-                        List<Country> countries =
-                                countryReports.getTopNCountriesByPopulation(
-                                        db.getConnection(), n);
+                        List<Country> countries = countryReports.getTopNCountriesByPopulation(db.getConnection(), n);
 
                         if (countries.isEmpty()) {
                             System.out.println("No countries found.");
@@ -108,13 +107,12 @@ public class App {
                         System.out.println("Invalid input. Please enter a valid number.");
                     }
                     break;
-                }
 
-                case 4: {
+                case 4:
                     System.out.print("Enter continent (e.g., Europe, Asia): ");
                     String continent = scanner.nextLine().trim();
 
-                    System.out.print("Enter the number: ");
+                    System.out.print("Enter the number of top countries: ");
                     try {
                         int n = Integer.parseInt(scanner.nextLine().trim());
 
@@ -123,9 +121,7 @@ public class App {
                             break;
                         }
 
-                        List<Country> countries =
-                                countryReports.getTopNCountriesInContinentByPopulation(
-                                        db.getConnection(), continent, n);
+                        List<Country> countries = countryReports.getTopNCountriesInContinentByPopulation(db.getConnection(), continent, n);
 
                         if (countries.isEmpty()) {
                             System.out.println("No countries found for continent: " + continent);
@@ -138,50 +134,41 @@ public class App {
                         System.out.println("Invalid input. Please enter a valid number.");
                     }
                     break;
-                }
 
-                case 5: {
+                case 5:
                     System.out.print("Enter country name: ");
                     String countryName = scanner.nextLine().trim();
 
-                    List<City> cities = cityReports.getCitiesInCountryByPopulation(
-                            db.getConnection(), countryName);
+                    List<City> citiesInCountry = cityReports.getCitiesInCountryByPopulation(db.getConnection(), countryName);
 
-                    if (cities.isEmpty()) {
+                    if (citiesInCountry.isEmpty()) {
                         System.out.println("No cities found for country: " + countryName);
                     } else {
-                        System.out.printf("%-35s %-35s %-25s %-12s%n",
-                                "City", "Country", "District", "Population");
-                        for (City city : cities) {
+                        System.out.printf("%-35s %-35s %-25s %-12s%n", "City", "Country", "District", "Population");
+                        for (City city : citiesInCountry) {
                             System.out.println(city);
                         }
                     }
                     break;
-                }
 
-                case 6: {
+                case 6:
                     System.out.print("Enter district name: ");
                     String districtName = scanner.nextLine().trim();
 
-                    List<City> cities = cityReports.getCitiesInDistrictByPopulation(
-                            db.getConnection(), districtName);
+                    List<City> citiesInDistrict = cityReports.getCitiesInDistrictByPopulation(db.getConnection(), districtName);
 
-                    if (cities.isEmpty()) {
+                    if (citiesInDistrict.isEmpty()) {
                         System.out.println("No cities found for district: " + districtName);
                     } else {
-                        System.out.printf("%-35s %-35s %-25s %-12s%n",
-                                "City", "Country", "District", "Population");
-                        for (City city : cities) {
+                        System.out.printf("%-35s %-35s %-25s %-12s%n", "City", "Country", "District", "Population");
+                        for (City city : citiesInDistrict) {
                             System.out.println(city);
                         }
                     }
                     break;
-                }
 
-
-                case 7: {
+                case 7:
                     System.out.print("Enter the number of top cities: ");
-
                     try {
                         int n = Integer.parseInt(scanner.nextLine().trim());
 
@@ -190,53 +177,40 @@ public class App {
                             break;
                         }
 
-                        List<City> cities =
-                                cityReports.getTopNCitiesByPopulation(
-                                        db.getConnection(), n);
+                        List<City> topCities = cityReports.getTopNCitiesByPopulation(db.getConnection(), n);
 
-                        if (cities.isEmpty()) {
+                        if (topCities.isEmpty()) {
                             System.out.println("No cities found.");
                         } else {
-                            System.out.printf("%-35s %-35s %-25s %-12s%n",
-                                    "City", "Country", "District", "Population");
-
-                            for (City city : cities) {
+                            System.out.printf("%-35s %-35s %-25s %-12s%n", "City", "Country", "District", "Population");
+                            for (City city : topCities) {
                                 System.out.println(city);
                             }
                         }
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input. Please enter a valid number.");
                     }
-
                     break;
-                }
 
-                case 8: {
+                case 8:
                     System.out.print("Enter continent (e.g., Europe, Asia): ");
-                    String continent = scanner.nextLine().trim();
+                    String continent8 = scanner.nextLine().trim();
 
                     System.out.print("Enter the number of top cities: ");
-
                     try {
                         int n = Integer.parseInt(scanner.nextLine().trim());
 
-                        if (continent.isEmpty() || n <= 0) {
-                            System.out.println(
-                                    "Enter a valid continent and a number greater than zero.");
+                        if (continent8.isEmpty() || n <= 0) {
+                            System.out.println("Enter a valid continent and a number greater than zero.");
                             break;
                         }
 
-                        List<City> cities =
-                                cityReports.getTopNCitiesInContinentByPopulation(
-                                        db.getConnection(), continent, n);
+                        List<City> cities = cityReports.getTopNCitiesInContinentByPopulation(db.getConnection(), continent8, n);
 
                         if (cities.isEmpty()) {
-                            System.out.println(
-                                    "No cities found for continent: " + continent);
+                            System.out.println("No cities found for continent: " + continent8);
                         } else {
-                            System.out.printf("%-35s %-35s %-25s %-12s%n",
-                                    "City", "Country", "District", "Population");
-
+                            System.out.printf("%-35s %-35s %-25s %-12s%n", "City", "Country", "District", "Population");
                             for (City city : cities) {
                                 System.out.println(city);
                             }
@@ -244,10 +218,77 @@ public class App {
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input. Please enter a valid number.");
                     }
-
                     break;
-                }
 
+                case 9:
+                    System.out.print("Enter country name: ");
+                    String countryName9 = scanner.nextLine().trim();
+                    System.out.print("Enter the number of top cities: ");
+                    try {
+                        int n = Integer.parseInt(scanner.nextLine().trim());
+                        if (countryName9.isEmpty() || n <= 0) {
+                            System.out.println("Enter a valid country and a number greater than zero.");
+                            break;
+                        }
+                        CityReports.printTopNCitiesInCountry(db.getConnection(), countryName9, n);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a valid number.");
+                    } catch (SQLException e) {
+                        System.out.println("Database error: " + e.getMessage());
+                    }
+                    break;
+
+                case 10:
+                    System.out.print("Enter district name: ");
+                    String districtName10 = scanner.nextLine().trim();
+                    System.out.print("Enter the number of top cities: ");
+                    try {
+                        int n = Integer.parseInt(scanner.nextLine().trim());
+                        if (districtName10.isEmpty() || n <= 0) {
+                            System.out.println("Enter a valid district and a number greater than zero.");
+                            break;
+                        }
+                        CityReports.printTopNCitiesInDistrict(db.getConnection(), districtName10, n);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a valid number.");
+                    } catch (SQLException e) {
+                        System.out.println("Database error: " + e.getMessage());
+                    }
+                    break;
+
+                case 11:
+                    System.out.print("Enter the number of top capital cities: ");
+                    try {
+                        int n = Integer.parseInt(scanner.nextLine().trim());
+                        if (n <= 0) {
+                            System.out.println("Number must be greater than zero.");
+                            break;
+                        }
+                        CityReports.printTopNCapitalCitiesInWorld(db.getConnection(), n);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a valid number.");
+                    } catch (SQLException e) {
+                        System.out.println("Database error: " + e.getMessage());
+                    }
+                    break;
+
+                case 12:
+                    System.out.print("Enter continent (e.g., Europe, Asia): ");
+                    String continent12 = scanner.nextLine().trim();
+                    System.out.print("Enter the number of top capital cities: ");
+                    try {
+                        int n = Integer.parseInt(scanner.nextLine().trim());
+                        if (continent12.isEmpty() || n <= 0) {
+                            System.out.println("Enter a valid continent and a number greater than zero.");
+                            break;
+                        }
+                        CityReports.printTopNCapitalCitiesInContinent(db.getConnection(), continent12, n);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a valid number.");
+                    } catch (SQLException e) {
+                        System.out.println("Database error: " + e.getMessage());
+                    }
+                    break;
 
                 case 0:
                     running = false;
@@ -255,7 +296,7 @@ public class App {
                     break;
 
                 default:
-                    System.out.println("Invalid option or feature not yet implemented.");
+                    System.out.println("Invalid option. Please choose a number between 0 and 12.");
             }
         }
 
