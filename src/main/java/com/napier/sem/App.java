@@ -40,9 +40,10 @@ public class App {
             System.out.println("12. Top N populated capital cities in a continent");
             // Raven
             System.out.println("13. Top N cities in a region");
+            System.out.println("14. Population of a specific city");
             //
             System.out.println("0. Exit");
-            System.out.print("Select an option (0-12): ");
+            System.out.print("Select an option (0-14): ");
 
             String input = scanner.nextLine().trim();
             int choice;
@@ -326,6 +327,31 @@ public class App {
                     } catch (NumberFormatException e) {
                         System.out.println(
                                 "Invalid input. Please enter a valid number.");
+                    }
+
+                    break;
+                }
+
+                // Raven
+                case 14: {
+                    System.out.print("Enter city name: ");
+                    String cityName = scanner.nextLine().trim();
+
+                    if (cityName.isEmpty()) {
+                        System.out.println("City name cannot be empty.");
+                        break;
+                    }
+
+                    Long population =
+                            cityReports.getPopulationOfCity(
+                                    db.getConnection(), cityName);
+
+                    if (population == null) {
+                        System.out.println("City not found or population could not be retrieved.");
+                    } else {
+                        System.out.printf(
+                                "Population of %s: %,d%n",
+                                cityName, population);
                     }
 
                     break;

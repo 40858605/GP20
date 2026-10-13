@@ -170,6 +170,30 @@ public class CityReports {
         return cities;
     }
 
+    // Raven/ Task #33: Get the total population of a specific city
+    public Long getPopulationOfCity(Connection con, String cityName) {
+
+        String sql =
+                "SELECT Population " +
+                        "FROM city " +
+                        "WHERE Name = ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, cityName);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                if (rset.next()) {
+                    return rset.getLong("Population");
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #33: " + e.getMessage());
+        }
+
+        return null;
+    }
 
     // Report #20: Top N populated cities in a country
     public static void printTopNCitiesInCountry(
