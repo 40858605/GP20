@@ -38,8 +38,12 @@ public class App {
             System.out.println("10. Top N populated cities in a district");
             System.out.println("11. Top N populated capital cities in the world");
             System.out.println("12. Top N populated capital cities in a continent");
+            // Raven
+            System.out.println("13. Top N cities in a region");
+            System.out.println("14. Population of a specific city");
+            //
             System.out.println("0. Exit");
-            System.out.print("Select an option (0-12): ");
+            System.out.print("Select an option (0-14): ");
 
             String input = scanner.nextLine().trim();
             int choice;
@@ -289,6 +293,69 @@ public class App {
                         System.out.println("Database error: " + e.getMessage());
                     }
                     break;
+
+                // Raven Task 19
+                case 13: {
+                    System.out.print("Enter region (e.g., Southeast Asia): ");
+                    String region = scanner.nextLine().trim();
+
+                    System.out.print("Enter the number of top cities: ");
+
+                    try {
+                        int n = Integer.parseInt(scanner.nextLine().trim());
+
+                        if (region.isEmpty() || n <= 0) {
+                            System.out.println(
+                                    "Enter a valid region and a number greater than zero.");
+                            break;
+                        }
+
+                        List<City> cities =
+                                cityReports.getTopNCitiesInRegionByPopulation(
+                                        db.getConnection(), region, n);
+
+                        if (cities.isEmpty()) {
+                            System.out.println("No cities found for region: " + region);
+                        } else {
+                            System.out.printf("%-35s %-35s %-25s %-12s%n",
+                                    "City", "Country", "District", "Population");
+
+                            for (City city : cities) {
+                                System.out.println(city);
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println(
+                                "Invalid input. Please enter a valid number.");
+                    }
+
+                    break;
+                }
+
+                // Raven
+                case 14: {
+                    System.out.print("Enter city name: ");
+                    String cityName = scanner.nextLine().trim();
+
+                    if (cityName.isEmpty()) {
+                        System.out.println("City name cannot be empty.");
+                        break;
+                    }
+
+                    Long population =
+                            cityReports.getPopulationOfCity(
+                                    db.getConnection(), cityName);
+
+                    if (population == null) {
+                        System.out.println("City not found or population could not be retrieved.");
+                    } else {
+                        System.out.printf(
+                                "Population of %s: %,d%n",
+                                cityName, population);
+                    }
+
+                    break;
+                }
 
                 case 0:
                     running = false;

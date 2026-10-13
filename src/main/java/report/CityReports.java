@@ -137,6 +137,64 @@ public class CityReports {
         return cities;
     }
 
+    // Raven/ Task #19: Top N cities in a region by population
+    public List<City> getTopNCitiesInRegionByPopulation(
+            Connection con, String region, int n) {
+
+        List<City> cities = new ArrayList<>();
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "WHERE co.Region = ? " +
+                        "ORDER BY ci.Population DESC, ci.Name ASC " +
+                        "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, region);
+            stmt.setInt(2, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #19: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Raven/ Task #33: Get the total population of a specific city
+    public Long getPopulationOfCity(Connection con, String cityName) {
+
+        String sql =
+                "SELECT Population " +
+                        "FROM city " +
+                        "WHERE Name = ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, cityName);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                if (rset.next()) {
+                    return rset.getLong("Population");
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #33: " + e.getMessage());
+        }
+
+        return null;
+    }
+
     // Report #20: Top N populated cities in a country
     public static void printTopNCitiesInCountry(
             Connection conn, String countryName, int n)
