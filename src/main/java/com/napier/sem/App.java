@@ -39,6 +39,11 @@ public class App {
             System.out.println("0. Exit");
             System.out.print("Select an option (0-10): ");
 
+            if (!scanner.hasNextLine()) {
+                System.out.println("\nNo interactive input detected (running in CI). Exiting...");
+                break;
+            }
+
             String input = scanner.nextLine().trim();
             int choice;
 
