@@ -3,6 +3,7 @@ package com.napier.sem;
 import report.CountryReports;
 import report.CityReports;
 import java.sql.SQLException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -32,13 +33,20 @@ public class App {
             System.out.println("4. Top N populated countries in a continent");
             System.out.println("5. All cities in a country by population");
             System.out.println("6. All cities in a district by population");
-            System.out.println("7. Top N cities in the world by population");
-            System.out.println("8. Top N cities in a continent by population");
-            System.out.println("9. Top N populated cities in a country");
-            System.out.println("10. Top N populated cities in a district");
+            System.out.println("7. Most populated cities in a country");
+            System.out.println("8. Most populated cities in a district");
+            System.out.println("9. Most populated capital cities in the world");
+            System.out.println("10. Most populated capital cities in a continent");
             System.out.println("11. Top N populated capital cities in the world");
             System.out.println("12. Top N populated capital cities in a continent");
+            System.out.println("14. All countries in a region by population");
             System.out.println("0. Exit");
+            System.out.print("Select an option (0-14): ");
+
+            if (!scanner.hasNextLine()) {
+                System.out.println("\nNo interactive input detected (running in CI). Exiting...");
+                break;
+            }
             System.out.print("Select an option (0-12): ");
 
             String input = scanner.nextLine().trim();
@@ -47,7 +55,8 @@ public class App {
             try {
                 choice = Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number (0-12).");
+                System.out.println(
+                        "Invalid input. Please enter a valid number (0-14).");
                 continue;
             }
 
@@ -289,6 +298,26 @@ public class App {
                         System.out.println("Database error: " + e.getMessage());
                     }
                     break;
+
+                // Issue #5: Urban vs. Rural population breakdown for each region
+                case 14: {
+                    System.out.println("\nExecuting: Urban vs. Rural population breakdown by region...\n");
+
+                    List<PopulationBreakdown> breakdownList = countryReports.getUrbanRuralByRegion(db.getConnection());
+
+                    if (breakdownList.isEmpty()) {
+                        System.out.println("No population breakdown data found.");
+                    } else {
+                        System.out.printf("%-30s %-15s %-18s %-18s %-12s %-12s%n",
+                                "Region", "Total Pop", "City Pop", "Rural Pop", "City %", "Rural %");
+                        System.out.println("---------------------------------------------------------------------------------------------------------");
+
+                        for (PopulationBreakdown pb : breakdownList) {
+                            System.out.println(pb);
+                        }
+                    }
+                    break;
+                }
 
                 case 0:
                     running = false;

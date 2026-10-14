@@ -2,6 +2,7 @@
 package report;
 
 import com.napier.sem.Country;
+import com.napier.sem.PopulationBreakdown;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -120,6 +121,35 @@ public class CountryReports {
         }
 
         return countries;
+    }
+
+
+    // Issue#6 Urban vs. Rural population breakdown for each region
+    public List<PopulationBreakdown> getUrbanRuralByRegion(Connection con) {
+        List<PopulationBreakdown> report = new ArrayList<>();
+        String sql = "SELECT c.Region AS Name, " +
+                "SUM(c.Population) AS TotalPop, " +
+                "SUM(COALESCE(city_pop.TotalCityPop, 0)) AS CityPop, " +
+                "(SUM(c.Population) - SUM(COALESCE(city_pop.TotalCityPop, 0))) AS RuralPop " +
+                "FROM country c " +
+                "LEFT JOIN (SELECT CountryCode, SUM(Population) AS TotalCityPop FROM city GROUP BY CountryCode) city_pop " +
+                "ON c.Code = city_pop.CountryCode " +
+                "GROUP BY c.Region " +
+                "ORDER BY TotalPop DESC";
+
+        try (Statement stmt = con.createStatement(); ResultSet rset = stmt.executeQuery(sql)) {
+            while (rset.next()) {
+                report.add(new PopulationBreakdown(
+                        rset.getString("Name"),
+                        rset.getLong("TotalPop"),
+                        rset.getLong("CityPop"),
+                        rset.getLong("RuralPop")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error running Report 5: " + e.getMessage());
+        }
+        return report;
     }
 
     // Convert a database row into a Country object
