@@ -122,6 +122,34 @@ public class CountryReports {
         return countries;
     }
 
+    // Issue#5 All countries in a region by population (largest to smallest)
+    public List<Country> getCountriesInRegionByPopulation(Connection con, String region) {
+        List<Country> countries = new ArrayList<>();
+        String sql = "SELECT c.Code, c.Name, c.Continent, c.Region, c.Population, ci.Name AS Capital " +
+                "FROM country c LEFT JOIN city ci ON c.Capital = ci.ID " +
+                "WHERE c.Region = ? ORDER BY c.Population DESC";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, region);
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    countries.add(new Country(
+                            rset.getString("Code"),
+                            rset.getString("Name"),
+                            rset.getString("Continent"),
+                            rset.getString("Region"),
+                            rset.getLong("Population"),
+                            rset.getString("Capital")
+                    ));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error running Report 3: " + e.getMessage());
+        }
+
+        return countries;
+    }
+
     // Convert a database row into a Country object
     private Country mapCountry(ResultSet rset) throws SQLException {
         return new Country(
