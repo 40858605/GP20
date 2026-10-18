@@ -123,7 +123,31 @@ public class CountryReports {
         return countries;
     }
 
-
+    // Issue#5 Generate a report of all countries in a region by population (Sprint 2)
+    public List<Country> getCountriesInRegionByPopulation(Connection con, String region) {
+        List<Country> countries = new ArrayList<>();
+        String sql = "SELECT Code, Name, Continent, Region, Population, Capital FROM country WHERE Region = ? ORDER BY Population DESC";
+        
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, region);
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    countries.add(new Country(
+                        rset.getString("Code"),
+                        rset.getString("Name"),
+                        rset.getString("Continent"),
+                        rset.getString("Region"),
+                        rset.getLong("Population"),
+                        rset.getInt("Capital")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error running Report 13: " + e.getMessage());
+        }
+        return countries;
+    }
+    
     // Issue#7 Urban vs. Rural population breakdown for each region (sprint 3)
     public List<PopulationBreakdown> getUrbanRuralByRegion(Connection con) {
         List<PopulationBreakdown> report = new ArrayList<>();
