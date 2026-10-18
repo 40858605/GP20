@@ -283,7 +283,7 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Issue #4 Urban vs. Rural population breakdown for each continent
+    // Issue #6 Urban vs. Rural population breakdown for each continent (sprint 2)
     public List<PopulationBreakdown> getUrbanRuralByContinent(Connection con) {
 
         List<PopulationBreakdown> report = new ArrayList<>();
