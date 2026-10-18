@@ -301,22 +301,7 @@ public class App {
 
                 // Issue #5: Urban vs. Rural population breakdown for each region
                 case 14: {
-                    System.out.println("\nExecuting: Urban vs. Rural population breakdown by region...\n");
-
-                    List<PopulationBreakdown> breakdownList = countryReports.getUrbanRuralByRegion(db.getConnection());
-
-                    if (breakdownList.isEmpty()) {
-                        System.out.println("No population breakdown data found.");
-                    } else {
-                        System.out.printf("%-30s %-15s %-18s %-18s %-12s %-12s%n",
-                                "Region", "Total Pop", "City Pop", "Rural Pop", "City %", "Rural %");
-                        System.out.println("---------------------------------------------------------------------------------------------------------");
-
-                        for (PopulationBreakdown pb : breakdownList) {
-                            System.out.println(pb);
-                        }
-                    }
-                    break;
+                    //pending
                 }
 
                 case 0:
