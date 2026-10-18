@@ -27,8 +27,8 @@ public class App {
 
         while (running) {
             System.out.println("\n=================== REPORTS MENU ===================");
-            System.out.println("1. All countries in world by population");
-            System.out.println("2. All countries in a continent by population");
+            System.out.println("1. All countries in world by population"); //(phone-myint-myat-307)
+            System.out.println("2. All countries in a continent by population"); //(phone-myint-myat-307)
             System.out.println("3. Top N populated countries in the world");
             System.out.println("4. Top N populated countries in a continent");
             System.out.println("5. All cities in a country by population");
@@ -39,7 +39,7 @@ public class App {
             System.out.println("10. Most populated capital cities in a continent");
             System.out.println("11. Top N populated capital cities in the world");
             System.out.println("12. Top N populated capital cities in a continent");
-            System.out.println("14. All countries in a region by population");
+            System.out.println("13. All countries in a region by population"); //(phone-myint-myat-307)
             System.out.println("0. Exit");
             System.out.print("Select an option (0-14): ");
 
@@ -47,7 +47,7 @@ public class App {
                 System.out.println("\nNo interactive input detected (running in CI). Exiting...");
                 break;
             }
-            System.out.print("Select an option (0-12): ");
+            System.out.print("Select an option (0-14): ");
 
             String input = scanner.nextLine().trim();
             int choice;
@@ -61,6 +61,7 @@ public class App {
             }
 
             switch (choice) {
+                // Issue#3 All countries in the world by population (phone-myint-myat-307)
                 case 1:
                     System.out.println("\nExecuting: All countries in world by population...\n");
                     List<Country> worldCountries = countryReports.getAllCountriesByPopulation(db.getConnection());
@@ -76,11 +77,12 @@ public class App {
                     }
                     break;
 
+                // Issue#4 All countries in a continent by population (phone-myint-myat-307)
                 case 2:
                     System.out.print("Enter Continent (e.g., Europe, Asia): ");
                     String continent1 = scanner.nextLine().trim();
                     System.out.println("\nExecuting: All countries in " + continent1 + "...\n");
-                    List<Country> continentCountries = countryReports.getCountriesInContinentByPopulation(db.getConnection(), continent1);
+                    List<Country> continentCountries = countryReports. getCountriesInContinentByPopulation(db.getConnection(), continent1);
                     if (continentCountries.isEmpty()) {
                         System.out.println("No countries found for continent: " + continent1);
                     } else {
@@ -299,9 +301,23 @@ public class App {
                     }
                     break;
 
-                // Issue #5: Urban vs. Rural population breakdown for each region
-                case 14: {
-                    //pending
+                // Issue #5: All countries in a region by population (phone-myint-myat-307)
+                case 13: {
+                    System.out.print("Enter Region name (e.g., Caribbean, Western Europe): ");
+                    String regionName = scanner.nextLine().trim();
+                    System.out.println("\nExecuting: All countries in " + regionName + " by population...\n");
+                    List<Country> regionCountries = countryReports.getCountriesInRegionByPopulation(db.getConnection(), regionName);
+                    if (regionCountries.isEmpty()) {
+                        System.out.println("No countries found for region: " + regionName);
+                    } else {
+                        System.out.printf("%-5s %-45s %-20s %-25s %-12s %-20s%n",
+                                "Code", "Name", "Continent", "Region", "Population", "Capital");
+                        System.out.println("------------------------------------------------------------------------------------------------------------------------");
+                        for (Country c : regionCountries) {
+                            System.out.println(c);
+                        }
+                    }
+                    break;
                 }
 
                 case 0:
