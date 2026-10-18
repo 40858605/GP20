@@ -26,8 +26,8 @@ public class App {
 
         while (running) {
             System.out.println("\n=================== REPORTS MENU ===================");
-            System.out.println("1. All countries in world by population");
-            System.out.println("2. All countries in a continent by population");
+            System.out.println("1. All countries in world by population");  //(phone-myint-myat-307)
+            System.out.println("2. All countries in a continent by population");  //(phone-myint-myat-307)
             System.out.println("3. Top N populated countries in the world");
             System.out.println("4. Top N populated countries in a continent");
             System.out.println("5. All cities in a country by population");
@@ -38,8 +38,12 @@ public class App {
             System.out.println("10. Top N populated cities in a district");
             System.out.println("11. Top N populated capital cities in the world");
             System.out.println("12. Top N populated capital cities in a continent");
+            System.out.println("14. Urban vs. Rural population breakdown for each continent"); //(phone-myint-myat-307)
+            System.out.println("15. Urban vs. Rural population breakdown for each region"); //(phone-myint-myat-307)
+            System.out.println("16. Urban vs. Rural population breakdown for each country"); //(phone-myint-myat-307)
+            System.out.println("17. Total population of a specific region"); //(phone-myint-myat-307)
             System.out.println("0. Exit");
-            System.out.print("Select an option (0-12): ");
+            System.out.print("Select an option (0-17): ");
 
             String input = scanner.nextLine().trim();
             int choice;
@@ -47,7 +51,7 @@ public class App {
             try {
                 choice = Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number (0-12).");
+                System.out.println("Invalid input. Please enter a valid number (0-17).");
                 continue;
             }
 
@@ -290,23 +294,73 @@ public class App {
                     }
                     break;
 
-                // Issue #4: Urban vs. Rural population breakdown for each continent
-                case 13: {
+                // Issue #6: Urban vs. Rural population breakdown for each continent (phone-myint-myat-307)
+                case 14: {
                     System.out.println("\nExecuting: Urban vs. Rural population breakdown by continent...\n");
-
-                    List<PopulationBreakdown> breakdownList = cityReports.getUrbanRuralByContinent(db.getConnection());
+                    List<PopulationBreakdown> breakdownList = countryReports.getUrbanRuralByContinent(db.getConnection());
 
                     if (breakdownList.isEmpty()) {
                         System.out.println("No population breakdown data found.");
                     } else {
-                        System.out.printf("%-20s %-15s %-18s %-18s %-12s %-12s%n",
-                                "Continent", "Total Pop", "City Pop", "Rural Pop", "City %", "Rural %");
-                        System.out.println("------------------------------------------------------------------------------------------------");
-
+                        System.out.printf("%-25s %-15s %-15s %-15s%n", "Continent", "Total Pop", "City Pop", "Rural Pop");
+                        System.out.println("------------------------------------------------------------------------");
                         for (PopulationBreakdown pb : breakdownList) {
                             System.out.println(pb);
                         }
                     }
+                    break;
+                }
+
+                // Issue #7: Urban vs. Rural population breakdown for each region (phone-myint-myat-307)
+                case 15: {
+                    System.out.println("\nExecuting: Urban vs. Rural population breakdown by region...\n");
+                    List<PopulationBreakdown> breakdownList = countryReports.getUrbanRuralByRegion(db.getConnection());
+
+                    if (breakdownList.isEmpty()) {
+                        System.out.println("No population breakdown data found.");
+                    } else {
+                        System.out.printf("%-30s %-15s %-15s %-15s%n", "Region", "Total Pop", "City Pop", "Rural Pop");
+                        System.out.println("------------------------------------------------------------------------");
+                        for (PopulationBreakdown pb : breakdownList) {
+                            System.out.println(pb);
+                        }
+                    }
+                    break;
+                }
+
+                // Issue #8: Urban vs. Rural population breakdown for each country (phone-myint-myat-307)
+                case 16: {
+                    System.out.println("\nExecuting: Urban vs. Rural population breakdown by country...\n");
+                    List<PopulationBreakdown> breakdownList = countryReports.getUrbanRuralByCountry(db.getConnection());
+
+                    if (breakdownList.isEmpty()) {
+                        System.out.println("No population breakdown data found.");
+                    } else {
+                        System.out.printf("%-40s %-15s %-15s %-15s%n", "Country", "Total Pop", "City Pop", "Rural Pop");
+                        System.out.println("--------------------------------------------------------------------------------");
+                        for (PopulationBreakdown pb : breakdownList) {
+                            System.out.println(pb);
+                        }
+                    }
+                    break;
+                }
+
+                // Issue #30: Total population of a specific region (phone-myint-myat-307)
+                case 17: {
+                    System.out.print("Enter Region name (e.g., Caribbean, Western Europe): ");
+                    String regionName = scanner.nextLine().trim();
+
+                    if (regionName.isEmpty()) {
+                        System.out.println("Region name cannot be empty.");
+                        break;
+                    }
+
+                    System.out.println("\nExecuting: Total population for region: " + regionName + "...\n");
+                    long totalPop = countryReports.getTotalPopulationOfRegion(db.getConnection(), regionName);
+
+                    System.out.println("--------------------------------------------------");
+                    System.out.printf("Total Population of %s: %,d%n", regionName, totalPop);
+                    System.out.println("--------------------------------------------------");
                     break;
                 }
 
@@ -316,7 +370,7 @@ public class App {
                     break;
 
                 default:
-                    System.out.println("Invalid option. Please choose a number between 0 and 12.");
+                    System.out.println("Invalid option. Please choose a number between 0 and 17.");
             }
         }
 
