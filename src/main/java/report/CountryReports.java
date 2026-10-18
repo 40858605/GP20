@@ -124,7 +124,7 @@ public class CountryReports {
     }
 
 
-    // Issue#6 Urban vs. Rural population breakdown for each region
+    // Issue#7 Urban vs. Rural population breakdown for each region (sprint 3)
     public List<PopulationBreakdown> getUrbanRuralByRegion(Connection con) {
         List<PopulationBreakdown> report = new ArrayList<>();
         String sql = "SELECT c.Region AS Name, " +
