@@ -12,7 +12,7 @@ import java.util.List;
 
 public class TopNCitiesReport {
 
-    // Report: Top N populated cities worldwide
+    // issue:28 top N populated cities in a country
     public List<City> getTopNCitiesWorldwide(
             Connection connection, int n) {
 
@@ -43,7 +43,7 @@ public class TopNCitiesReport {
         return cities;
     }
 
-    // Report: Top N populated cities in a continent
+    // issue:29 top N populated cities in a district
     public List<City> getTopNCitiesInContinent(
             Connection connection, String continent, int n) {
 

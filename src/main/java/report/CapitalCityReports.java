@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CapitalCityReports {
 
-    // Report #22: All capital cities in the world by population
+    // issue:4 All capital cities in the world by population
     public List<City> getCapitalCitiesInWorldByPopulation(
             Connection con) {
 
@@ -39,7 +39,7 @@ public class CapitalCityReports {
         return cities;
     }
 
-    // Report #23: All capital cities in a continent by population
+    // issue:5 All capital cities in a continent by population
     public List<City> getCapitalCitiesInContinentByPopulation(
             Connection con, String continent) {
 
