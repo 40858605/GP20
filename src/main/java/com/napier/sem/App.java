@@ -1,5 +1,6 @@
 package com.napier.sem;
 
+import report.CapitalCityReports;
 import report.CountryReports;
 import report.CityReports;
 import report.TopNCitiesReport;
@@ -25,6 +26,7 @@ public class App {
         CountryReports countryReports = new CountryReports();
         CityReports cityReports = new CityReports();
         TopNCitiesReport topNCitiesReport = new TopNCitiesReport();
+        CapitalCityReports capitalCityReports = new CapitalCityReports();
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
