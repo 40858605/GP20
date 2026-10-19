@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CityReports {
 
-    // Task #15: All cities in a country by population
+    // Task #15: All cities in a country by population (Aw-Thu-Linn)
     public List<City> getCitiesInCountryByPopulation(
             Connection con, String countryName) {
 
@@ -42,7 +42,7 @@ public class CityReports {
         return cities;
     }
 
-    // Task #16: All cities in a district by population
+    // Task #16: All cities in a district by population (Aw-Thu-Linn)
     public List<City> getCitiesInDistrictByPopulation(
             Connection con, String districtName) {
 
@@ -73,7 +73,7 @@ public class CityReports {
         return cities;
     }
 
-    // Report #20: Top N populated cities in a country
+    // Issue#20: Top N populated cities in a country (Thaw-Zin-Soe)
     public static void printTopNCitiesInCountry(
             Connection conn, String countryName, int n)
             throws SQLException {
@@ -110,7 +110,7 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Report #21: Top N populated cities in a district
+    // Issue#21: Top N populated cities in a district (Thaw-Zin-Soe)
     public static void printTopNCitiesInDistrict(
             Connection conn, String districtName, int n)
             throws SQLException {
@@ -148,7 +148,7 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Report #25: Top N populated capital cities in the world
+    // Issue#25: Top N populated capital cities in the world (winhponeemyat202104-del)
     public static void printTopNCapitalCitiesInWorld(
             Connection conn, int n) throws SQLException {
 
@@ -183,7 +183,7 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Report #26: Top N populated capital cities in a continent
+    // Issue#26: Top N populated capital cities in a continent (winhponeemyat202104-del)
     public static void printTopNCapitalCitiesInContinent(
             Connection conn, String continent, int n)
             throws SQLException {
