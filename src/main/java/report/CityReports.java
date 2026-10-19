@@ -6,10 +6,37 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement; // Added import for Statement
 import java.util.ArrayList;
 import java.util.List;
 
 public class CityReports {
+
+    // Task #12: All cities in the world by population
+    public List<City> getAllCitiesInWorldByPopulation(Connection con) {
+        List<City> cities = new ArrayList<>();
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "ORDER BY ci.Population DESC";
+
+        try (Statement stmt = con.createStatement();
+             ResultSet rset = stmt.executeQuery(sql)) {
+
+            while (rset.next()) {
+                cities.add(mapCity(rset));
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #12: " + e.getMessage());
+        }
+
+        return cities;
+    }
 
     // Task #15: All cities in a country by population (Aw-Thu-Linn)
     public List<City> getCitiesInCountryByPopulation(
