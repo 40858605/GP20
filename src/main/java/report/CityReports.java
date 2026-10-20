@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CityReports {
 
-    // Task #15: All cities in a country by population
+    // Issue#15: Report of all cities in a country (Aw-Thu-Linn)
     public List<City> getCitiesInCountryByPopulation(
             Connection con, String countryName) {
 
@@ -42,7 +42,7 @@ public class CityReports {
         return cities;
     }
 
-    // Task #16: All cities in a district by population
+    // Issue#16: Report of all cities in a district (Aw-Thu-Linn)
     public List<City> getCitiesInDistrictByPopulation(
             Connection con, String districtName) {
 
@@ -73,7 +73,7 @@ public class CityReports {
         return cities;
     }
 
-    // Task #17: Top N cities in the world by population
+    // Issue#17: Top N populated cities in the world (Aw-Thu-Linn)
     public List<City> getTopNCitiesByPopulation(
             Connection con, int n) {
 
@@ -104,7 +104,7 @@ public class CityReports {
         return cities;
     }
 
-    // Task #18: Top N cities in a continent by population
+    // Issue#18: Top N populated cities in a continent (Aw-Thu-Linn)
     public List<City> getTopNCitiesInContinentByPopulation(
             Connection con, String continent, int n) {
 
@@ -137,7 +137,7 @@ public class CityReports {
         return cities;
     }
 
-    // Raven/ Task #19: Top N cities in a region by population
+    // Issue#19: Top N populated cities in a region (Aw-Thu-Linn)
     public List<City> getTopNCitiesInRegionByPopulation(
             Connection con, String region, int n) {
 
@@ -170,7 +170,7 @@ public class CityReports {
         return cities;
     }
 
-    // Raven/ Task #33: Get the total population of a specific city
+    // Issue#33: Total population of a specific city (Aw-Thu-Linn)
     public Long getPopulationOfCity(Connection con, String cityName) {
 
         String sql =
