@@ -1,3 +1,4 @@
+
 package report;
 
 import com.napier.sem.City;
@@ -11,18 +12,22 @@ import java.util.List;
 
 public class CapitalCityReports {
 
-    // Report #22: All capital cities in the world by population
-    public List<City> getCapitalCitiesInWorldByPopulation(
-            Connection con) {
+    //Issue:4 or Report #22: All capital cities worldwide by population
+    public List<City> getCapitalCitiesInWorldByPopulation(Connection con) {
 
         List<City> cities = new ArrayList<>();
 
         String sql =
                 "SELECT ci.Name, co.Name AS Country, " +
                         "ci.District, ci.Population " +
-                        "FROM city ci " +
-                        "JOIN country co ON co.Capital = ci.ID " +
+                        "FROM country co " +
+                        "JOIN city ci ON co.Capital = ci.ID " +
                         "ORDER BY ci.Population DESC, ci.Name ASC";
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
 
         try (PreparedStatement stmt = con.prepareStatement(sql);
              ResultSet rset = stmt.executeQuery()) {
@@ -39,7 +44,7 @@ public class CapitalCityReports {
         return cities;
     }
 
-    // Report #23: All capital cities in a continent by population
+    //Issue:5 or Report #23: All capital cities in a continent by population
     public List<City> getCapitalCitiesInContinentByPopulation(
             Connection con, String continent) {
 
@@ -48,12 +53,18 @@ public class CapitalCityReports {
         String sql =
                 "SELECT ci.Name, co.Name AS Country, " +
                         "ci.District, ci.Population " +
-                        "FROM city ci " +
-                        "JOIN country co ON co.Capital = ci.ID " +
+                        "FROM country co " +
+                        "JOIN city ci ON co.Capital = ci.ID " +
                         "WHERE co.Continent = ? " +
                         "ORDER BY ci.Population DESC, ci.Name ASC";
 
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
+
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
+
             stmt.setString(1, continent);
 
             try (ResultSet rset = stmt.executeQuery()) {
@@ -82,8 +93,10 @@ public class CapitalCityReports {
 
     // Display report results
     public void printResults(List<City> cities) {
+
         if (cities.isEmpty()) {
-            System.out.println("No matching capital cities found.");
+            System.out.println(
+                    "No matching capital cities found.");
             return;
         }
 

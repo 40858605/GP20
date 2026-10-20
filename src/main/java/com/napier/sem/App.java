@@ -70,6 +70,7 @@ public class App {
                     }
                     break;
 
+
                 case 2: // Issue #4
                     System.out.print("Enter Continent (e.g., Europe, Asia): ");
                     String continent1 = scanner.nextLine().trim();
@@ -143,6 +144,7 @@ public class App {
                     String countryName = scanner.nextLine().trim();
 
                     List<City> citiesInCountry = cityReports.getCitiesInCountryByPopulation(db.getConnection(), countryName);
+
 
                     if (citiesInCountry.isEmpty()) {
                         System.out.println("No cities found for country: " + countryName);
@@ -221,6 +223,7 @@ public class App {
                         System.out.println("Database error: " + e.getMessage());
                     }
                     break;
+
 
                 case 10: // Issue #26
                     System.out.print("Enter continent (e.g., Europe, Asia): ");
