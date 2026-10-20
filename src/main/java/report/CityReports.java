@@ -38,7 +38,7 @@ public class CityReports {
         return cities;
     }
 
-    // Task #15: All cities in a country by population (Aw-Thu-Linn)
+    // Issue#15: Report of all cities in a country (Aw-Thu-Linn)
     public List<City> getCitiesInCountryByPopulation(
             Connection con, String countryName) {
 
@@ -69,7 +69,7 @@ public class CityReports {
         return cities;
     }
 
-    // Task #16: All cities in a district by population (Aw-Thu-Linn)
+    // Issue#16: Report of all cities in a district (Aw-Thu-Linn)
     public List<City> getCitiesInDistrictByPopulation(
             Connection con, String districtName) {
 
