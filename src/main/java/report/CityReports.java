@@ -6,12 +6,39 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement; // Added import for Statement
 import java.util.ArrayList;
 import java.util.List;
 
 public class CityReports {
 
-    // Task #15: All cities in a country by population
+    // Task #12: All cities in the world by population
+    public List<City> getAllCitiesInWorldByPopulation(Connection con) {
+        List<City> cities = new ArrayList<>();
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "ORDER BY ci.Population DESC";
+
+        try (Statement stmt = con.createStatement();
+             ResultSet rset = stmt.executeQuery(sql)) {
+
+            while (rset.next()) {
+                cities.add(mapCity(rset));
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #12: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Task #15: All cities in a country by population (Aw-Thu-Linn)
     public List<City> getCitiesInCountryByPopulation(
             Connection con, String countryName) {
 
@@ -42,7 +69,7 @@ public class CityReports {
         return cities;
     }
 
-    // Task #16: All cities in a district by population
+    // Task #16: All cities in a district by population (Aw-Thu-Linn)
     public List<City> getCitiesInDistrictByPopulation(
             Connection con, String districtName) {
 
@@ -73,129 +100,7 @@ public class CityReports {
         return cities;
     }
 
-    // Task #17: Top N cities in the world by population
-    public List<City> getTopNCitiesByPopulation(
-            Connection con, int n) {
-
-        List<City> cities = new ArrayList<>();
-
-        String sql =
-                "SELECT ci.Name, co.Name AS Country, " +
-                        "ci.District, ci.Population " +
-                        "FROM city ci " +
-                        "JOIN country co ON ci.CountryCode = co.Code " +
-                        "ORDER BY ci.Population DESC, ci.Name ASC " +
-                        "LIMIT ?";
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setInt(1, n);
-
-            try (ResultSet rset = stmt.executeQuery()) {
-                while (rset.next()) {
-                    cities.add(mapCity(rset));
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println(
-                    "Error running Task #17: " + e.getMessage());
-        }
-
-        return cities;
-    }
-
-    // Task #18: Top N cities in a continent by population
-    public List<City> getTopNCitiesInContinentByPopulation(
-            Connection con, String continent, int n) {
-
-        List<City> cities = new ArrayList<>();
-
-        String sql =
-                "SELECT ci.Name, co.Name AS Country, " +
-                        "ci.District, ci.Population " +
-                        "FROM city ci " +
-                        "JOIN country co ON ci.CountryCode = co.Code " +
-                        "WHERE co.Continent = ? " +
-                        "ORDER BY ci.Population DESC, ci.Name ASC " +
-                        "LIMIT ?";
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, continent);
-            stmt.setInt(2, n);
-
-            try (ResultSet rset = stmt.executeQuery()) {
-                while (rset.next()) {
-                    cities.add(mapCity(rset));
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println(
-                    "Error running Task #18: " + e.getMessage());
-        }
-
-        return cities;
-    }
-
-    // Raven/ Task #19: Top N cities in a region by population
-    public List<City> getTopNCitiesInRegionByPopulation(
-            Connection con, String region, int n) {
-
-        List<City> cities = new ArrayList<>();
-
-        String sql =
-                "SELECT ci.Name, co.Name AS Country, " +
-                        "ci.District, ci.Population " +
-                        "FROM city ci " +
-                        "JOIN country co ON ci.CountryCode = co.Code " +
-                        "WHERE co.Region = ? " +
-                        "ORDER BY ci.Population DESC, ci.Name ASC " +
-                        "LIMIT ?";
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, region);
-            stmt.setInt(2, n);
-
-            try (ResultSet rset = stmt.executeQuery()) {
-                while (rset.next()) {
-                    cities.add(mapCity(rset));
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println(
-                    "Error running Task #19: " + e.getMessage());
-        }
-
-        return cities;
-    }
-
-    // Raven/ Task #33: Get the total population of a specific city
-    public Long getPopulationOfCity(Connection con, String cityName) {
-
-        String sql =
-                "SELECT Population " +
-                        "FROM city " +
-                        "WHERE Name = ?";
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, cityName);
-
-            try (ResultSet rset = stmt.executeQuery()) {
-                if (rset.next()) {
-                    return rset.getLong("Population");
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println(
-                    "Error running Task #33: " + e.getMessage());
-        }
-
-        return null;
-    }
-
-    // Report #20: Top N populated cities in a country
+    // Issue#20: Top N populated cities in a country (Thaw-Zin-Soe)
     public static void printTopNCitiesInCountry(
             Connection conn, String countryName, int n)
             throws SQLException {
@@ -232,7 +137,7 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Report #21: Top N populated cities in a district
+    // Issue#21: Top N populated cities in a district (Thaw-Zin-Soe)
     public static void printTopNCitiesInDistrict(
             Connection conn, String districtName, int n)
             throws SQLException {
@@ -270,7 +175,7 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Report #25: Top N populated capital cities in the world
+    // Issue#25: Top N populated capital cities in the world (winhponeemyat202104-del)
     public static void printTopNCapitalCitiesInWorld(
             Connection conn, int n) throws SQLException {
 
@@ -305,7 +210,7 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Report #26: Top N populated capital cities in a continent
+    // Issue#26: Top N populated capital cities in a continent (winhponeemyat202104-del)
     public static void printTopNCapitalCitiesInContinent(
             Connection conn, String continent, int n)
             throws SQLException {
