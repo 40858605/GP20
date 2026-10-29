@@ -65,7 +65,7 @@ public class CountryReports {
         return countries;
     }
 
-    // 3. Top N populated countries in the world
+    // Issue#9 Top N populated countries in the world (40858605)
     public List<Country> getTopNCountriesByPopulation(
             Connection con, int n) {
 
@@ -93,7 +93,7 @@ public class CountryReports {
         return countries;
     }
 
-    // 4. Top N populated countries in a continent
+    // Issue#10 Top N populated countries in a continent (40858605)
     public List<Country> getTopNCountriesInContinentByPopulation(
             Connection con, String continent, int n) {
 
@@ -118,6 +118,36 @@ public class CountryReports {
 
         } catch (SQLException e) {
             System.out.println("Error running Report 4: " + e.getMessage());
+        }
+
+        return countries;
+    }
+
+    // Issue#11 Top N populated countries in a region (40858605)
+    public List<Country> getTopNCountriesInRegionByPopulation(
+            Connection con, String region, int n) {
+
+        List<Country> countries = new ArrayList<>();
+
+        String sql = "SELECT c.Code, c.Name, c.Continent, c.Region, " +
+                "c.Population, ci.Name AS Capital " +
+                "FROM country c LEFT JOIN city ci ON c.Capital = ci.ID " +
+                "WHERE c.Region = ? " +
+                "ORDER BY c.Population DESC " +
+                "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, region);
+            stmt.setInt(2, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    countries.add(mapCountry(rset));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error running Report 11: " + e.getMessage());
         }
 
         return countries;

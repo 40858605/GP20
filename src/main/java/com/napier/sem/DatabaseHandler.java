@@ -19,36 +19,30 @@ public class DatabaseHandler {
             System.exit(-1);
         }
 
-        // Determine which hosts/ports to try
-        String envHost = System.getenv("DB_HOST");
-        String[] hostsToTry;
-
-        if (envHost != null && !envHost.isEmpty()) {
-            hostsToTry = new String[]{ envHost };
-        } else {
-            hostsToTry = new String[]{ "localhost:3306", "localhost:3307", "db:3306" };
+        String dbHost = System.getenv("DB_HOST");
+        if (dbHost == null || dbHost.isEmpty()) {
+            dbHost = "localhost:3308"; //change this back to 3306 if you're using it
         }
 
-        for (String dbHost : hostsToTry) {
-            int retries = 6; // Quick retries per host
-            for (int i = 0; i < retries; ++i) {
-                System.out.println("Connecting to database (" + dbHost + ") Attempt " + (i + 1) + "...");
-                try {
-                    Thread.sleep(1500);
-                    con = DriverManager.getConnection(
-                            "jdbc:mysql://" + dbHost + "/world?allowPublicKeyRetrieval=true&useSSL=false",
-                            "root",
-                            "example"
-                    );
-                    System.out.println("Successfully connected to 'world' database at " + dbHost + "!");
-                    return; // Exit as soon as a connection succeeds
-                } catch (SQLException sqle) {
-                    System.out.println("Failed to connect to " + dbHost + " (Attempt " + (i + 1) + "): " + sqle.getMessage());
-                } catch (InterruptedException ie) {
-                    System.out.println("Thread interrupted.");
-                }
+        int retries = 30;
+        for (int i = 0; i < retries; ++i) {
+            System.out.println("Connecting to database (" + dbHost + ") Attempt " + (i + 1) + "...");
+            try {
+                Thread.sleep(2000);
+                con = DriverManager.getConnection(
+                        "jdbc:mysql://" + dbHost + "/world?allowPublicKeyRetrieval=true&useSSL=false",
+                        "root",
+                        "example"
+                );
+                System.out.println("Successfully connected to 'world' database!");
+                break;
+            } catch (SQLException sqle) {
+                System.out.println("Failed to connect attempt " + (i + 1) + ": " + sqle.getMessage());
+            } catch (InterruptedException ie) {
+                System.out.println("Thread interrupted.");
             }
         }
+    }
 
         System.out.println("Could not establish a database connection on any port. Exiting...");
     }
