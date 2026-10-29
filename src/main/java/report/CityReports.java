@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CityReports {
 
-    // Task #12: All cities in the world by population
+    // Task #12: All cities in the world by population (40858605)
     public List<City> getAllCitiesInWorldByPopulation(Connection con) {
         List<City> cities = new ArrayList<>();
 

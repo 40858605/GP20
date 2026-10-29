@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CapitalCityReports {
 
-    //Issue:4 or Report #22: All capital cities worldwide by population
+    //Issue:4 or Report #22: All capital cities worldwide by population (Thaw-Zin-Soe)
     public List<City> getCapitalCitiesInWorldByPopulation(Connection con) {
 
         List<City> cities = new ArrayList<>();
@@ -44,7 +44,7 @@ public class CapitalCityReports {
         return cities;
     }
 
-    //Issue:5 or Report #23: All capital cities in a continent by population
+    //Issue:5 or Report #23: All capital cities in a continent by population (Thaw-Zin-Soe)
     public List<City> getCapitalCitiesInContinentByPopulation(
             Connection con, String continent) {
 
