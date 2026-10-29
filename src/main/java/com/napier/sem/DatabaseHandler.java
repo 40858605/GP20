@@ -44,9 +44,6 @@ public class DatabaseHandler {
         }
     }
 
-        System.out.println("Could not establish a database connection on any port. Exiting...");
-    }
-
     public void disconnect() {
         if (con != null) {
             try {
