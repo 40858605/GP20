@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CountryReports {
 
-    // 1. All countries in the world by population
+    // Issue#3. All countries in the world by population (phone-myint-myat-307)
     public List<Country> getAllCountriesByPopulation(Connection con) {
         List<Country> countries = new ArrayList<>();
 
@@ -37,7 +37,7 @@ public class CountryReports {
         return countries;
     }
 
-    // 2. All countries in a continent by population
+    // Issue#4 All countries in a continent by population (phone-myint-myat-307)
     public List<Country> getCountriesInContinentByPopulation(
             Connection con, String continent) {
 
@@ -123,7 +123,7 @@ public class CountryReports {
         return countries;
     }
 
-    // Issue#5 All countries in a region by population (largest to smallest)
+    // Issue#5 All countries in a region by population (largest to smallest)  (phone-myint-myat-307)
     public List<Country> getCountriesInRegionByPopulation(Connection con, String region) {
         List<Country> countries = new ArrayList<>();
         String sql = "SELECT c.Code, c.Name, c.Continent, c.Region, c.Population, ci.Name AS Capital " +
