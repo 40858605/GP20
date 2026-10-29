@@ -247,6 +247,30 @@ public class CityReports {
 
         printResults(cities);
     }
+    // Report #32: Total population of a specific district
+    public long getTotalPopulationOfDistrict(
+            Connection con, String districtName) {
+
+        String sql =
+                "SELECT COALESCE(SUM(Population), 0) AS TotalPopulation " +
+                        "FROM city " +
+                        "WHERE District = ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, districtName);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                if (rset.next()) {
+                    return rset.getLong("TotalPopulation");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Report #32: " + e.getMessage());
+        }
+
+        return 0;
+    }
 
     // Convert a database row into a City object
     private static City mapCity(ResultSet rset) throws SQLException {
