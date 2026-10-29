@@ -1,17 +1,46 @@
 package report;
 
 import com.napier.sem.City;
+import com.napier.sem.PopulationBreakdown;
 
+import java.sql.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CityReports {
 
-    // Task #15: All cities in a country by population
+    // Issue #12: All cities in the world by population (40858605)
+    public List<City> getAllCitiesInWorldByPopulation(Connection con) {
+        List<City> cities = new ArrayList<>();
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "ORDER BY ci.Population DESC";
+
+        try (Statement stmt = con.createStatement();
+             ResultSet rset = stmt.executeQuery(sql)) {
+
+            while (rset.next()) {
+                cities.add(mapCity(rset));
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #12: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Issue #15: All cities in a country by population (Aw-Thu-Linn)
     public List<City> getCitiesInCountryByPopulation(
             Connection con, String countryName) {
 
@@ -42,7 +71,7 @@ public class CityReports {
         return cities;
     }
 
-    // Task #16: All cities in a district by population
+    // Issue #16: All cities in a district by population (Aw-Thu-Linn)
     public List<City> getCitiesInDistrictByPopulation(
             Connection con, String districtName) {
 
@@ -73,7 +102,7 @@ public class CityReports {
         return cities;
     }
 
-    // Task #17: Top N cities in the world by population
+    // Issue #17: Top N cities in the world by population (Aw-Thu-Linn)
     public List<City> getTopNCitiesByPopulation(
             Connection con, int n) {
 
@@ -104,7 +133,7 @@ public class CityReports {
         return cities;
     }
 
-    // Task #18: Top N cities in a continent by population
+    // Issue #18: Top N cities in a continent by population (Aw-Thu-Linn)
     public List<City> getTopNCitiesInContinentByPopulation(
             Connection con, String continent, int n) {
 
@@ -137,7 +166,7 @@ public class CityReports {
         return cities;
     }
 
-    // Report #20: Top N populated cities in a country
+    // Issue#20: Top N populated cities in a country (Thaw-Zin-Soe)
     public static void printTopNCitiesInCountry(
             Connection conn, String countryName, int n)
             throws SQLException {
@@ -174,7 +203,7 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Report #21: Top N populated cities in a district
+    // Issue#21: Top N populated cities in a district (Thaw-Zin-Soe)
     public static void printTopNCitiesInDistrict(
             Connection conn, String districtName, int n)
             throws SQLException {
@@ -212,7 +241,7 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Report #25: Top N populated capital cities in the world
+    // Issue#25: Top N populated capital cities in the world (winhponeemyat202104-del)
     public static void printTopNCapitalCitiesInWorld(
             Connection conn, int n) throws SQLException {
 
@@ -247,7 +276,7 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Report #26: Top N populated capital cities in a continent
+    // Issue#26: Top N populated capital cities in a continent (winhponeemyat202104-del)
     public static void printTopNCapitalCitiesInContinent(
             Connection conn, String continent, int n)
             throws SQLException {

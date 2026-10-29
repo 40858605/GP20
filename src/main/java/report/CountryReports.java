@@ -65,7 +65,7 @@ public class CountryReports {
         return countries;
     }
 
-    // 3. Top N populated countries in the world
+    // Issue#9 Top N populated countries in the world (40858605)
     public List<Country> getTopNCountriesByPopulation(
             Connection con, int n) {
 
@@ -93,7 +93,7 @@ public class CountryReports {
         return countries;
     }
 
-    // 4. Top N populated countries in a continent
+    // Issue#10 Top N populated countries in a continent (40858605)
     public List<Country> getTopNCountriesInContinentByPopulation(
             Connection con, String continent, int n) {
 
@@ -123,26 +123,165 @@ public class CountryReports {
         return countries;
     }
 
-    // Issue#5 Generate a report of all countries in a region by population (Sprint 2) (phone-myint-myat-307)
-    public List<Country> getCountriesInRegionByPopulation(Connection con, String region) {
+    // Issue#11 Top N populated countries in a region (40858605)
+    public List<Country> getTopNCountriesInRegionByPopulation(
+            Connection con, String region, int n) {
+
         List<Country> countries = new ArrayList<>();
+
         String sql = "SELECT c.Code, c.Name, c.Continent, c.Region, " +
                 "c.Population, ci.Name AS Capital " +
                 "FROM country c LEFT JOIN city ci ON c.Capital = ci.ID " +
                 "WHERE c.Region = ? " +
-                "ORDER BY c.Population DESC";
+                "ORDER BY c.Population DESC " +
+                "LIMIT ?";
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, region);
+            stmt.setInt(2, n);
+
             try (ResultSet rset = stmt.executeQuery()) {
                 while (rset.next()) {
                     countries.add(mapCountry(rset));
                 }
             }
+
         } catch (SQLException e) {
-            System.out.println("Error running Report for Region Countries: " + e.getMessage());
+            System.out.println("Error running Report 11: " + e.getMessage());
         }
+
         return countries;
+    }
+
+    // Issue#5 All countries in a region by population (largest to smallest) (phone-myint-myat-307)
+    public List<Country> getCountriesInRegionByPopulation(Connection con, String region) {
+        List<Country> countries = new ArrayList<>();
+        String sql = "SELECT c.Code, c.Name, c.Continent, c.Region, c.Population, ci.Name AS Capital " +
+                "FROM country c LEFT JOIN city ci ON c.Capital = ci.ID " +
+                "WHERE c.Region = ? ORDER BY c.Population DESC";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, region);
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    countries.add(new Country(
+                            rset.getString("Code"),
+                            rset.getString("Name"),
+                            rset.getString("Continent"),
+                            rset.getString("Region"),
+                            rset.getLong("Population"),
+                            rset.getString("Capital")
+                    ));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error running Report 3: " + e.getMessage());
+        }
+
+        return countries;
+    }
+
+    // Issue #6 Urban vs. Rural population breakdown for each continent (sprint 2) (phone-myint-myat-307)
+    public List<PopulationBreakdown> getUrbanRuralByContinent(Connection con) {
+
+        List<PopulationBreakdown> report = new ArrayList<>();
+        String sql = "SELECT c.Continent AS Name, " +
+                "SUM(c.Population) AS TotalPop, " +
+                "SUM(COALESCE(city_pop.TotalCityPop, 0)) AS CityPop, " +
+                "(SUM(c.Population) - SUM(COALESCE(city_pop.TotalCityPop, 0))) AS RuralPop " +
+                "FROM country c " +
+                "LEFT JOIN (SELECT CountryCode, SUM(Population) AS TotalCityPop FROM city GROUP BY CountryCode) city_pop " +
+                "ON c.Code = city_pop.CountryCode " +
+                "GROUP BY c.Continent " +
+                "ORDER BY TotalPop DESC";
+
+        try (Statement stmt = con.createStatement(); ResultSet rset = stmt.executeQuery(sql)) {
+
+            while (rset.next()) {
+                report.add(new PopulationBreakdown(
+                        rset.getString("Name"),
+                        rset.getLong("TotalPop"),
+                        rset.getLong("CityPop"),
+                        rset.getLong("RuralPop")
+                ));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error running Report 4: " + e.getMessage());
+        }
+
+        return report;
+    }
+
+    // Issue#7 Urban vs. Rural population breakdown for each region (sprint 3) (phone-myint-myat-307)
+    public List<PopulationBreakdown> getUrbanRuralByRegion(Connection con) {
+        List<PopulationBreakdown> report = new ArrayList<>();
+        String sql = "SELECT c.Region AS Name, " +
+                "SUM(c.Population) AS TotalPop, " +
+                "SUM(COALESCE(city_pop.TotalCityPop, 0)) AS CityPop, " +
+                "(SUM(c.Population) - SUM(COALESCE(city_pop.TotalCityPop, 0))) AS RuralPop " +
+                "FROM country c " +
+                "LEFT JOIN (SELECT CountryCode, SUM(Population) AS TotalCityPop FROM city GROUP BY CountryCode) city_pop " +
+                "ON c.Code = city_pop.CountryCode " +
+                "GROUP BY c.Region " +
+                "ORDER BY TotalPop DESC";
+
+        try (Statement stmt = con.createStatement(); ResultSet rset = stmt.executeQuery(sql)) {
+            while (rset.next()) {
+                report.add(new PopulationBreakdown(
+                        rset.getString("Name"),
+                        rset.getLong("TotalPop"),
+                        rset.getLong("CityPop"),
+                        rset.getLong("RuralPop")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error running Report 5: " + e.getMessage());
+        }
+        return report;
+    }
+
+    // Issue#8 Urban vs. Rural population breakdown for each country (sprint 3) (phone-myint-myat-307)
+    public List<PopulationBreakdown> getUrbanRuralByCountry(Connection con) {
+        List<PopulationBreakdown> report = new ArrayList<>();
+        String sql = "SELECT c.Name AS Name, " +
+                "c.Population AS TotalPop, " +
+                "COALESCE(city_pop.TotalCityPop, 0) AS CityPop, " +
+                "(c.Population - COALESCE(city_pop.TotalCityPop, 0)) AS RuralPop " +
+                "FROM country c " +
+                "LEFT JOIN (SELECT CountryCode, SUM(Population) AS TotalCityPop FROM city GROUP BY CountryCode) city_pop " +
+                "ON c.Code = city_pop.CountryCode " +
+                "ORDER BY c.Population DESC";
+
+        try (Statement stmt = con.createStatement(); ResultSet rset = stmt.executeQuery(sql)) {
+            while (rset.next()) {
+                report.add(new PopulationBreakdown(
+                        rset.getString("Name"),
+                        rset.getLong("TotalPop"),
+                        rset.getLong("CityPop"),
+                        rset.getLong("RuralPop")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error running Report 6: " + e.getMessage());
+        }
+        return report;
+    }
+
+    // Issue#30 Access the total population of a specific region (sprint 3) (phone-myint-myat-307)
+    public long getTotalPopulationOfRegion(Connection con, String region) {
+        String sql = "SELECT SUM(Population) AS TotalPopulation FROM country WHERE Region = ?";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, region);
+            try (ResultSet rset = stmt.executeQuery()) {
+                if (rset.next()) {
+                    return rset.getLong("TotalPopulation");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error running Report 7: " + e.getMessage());
+        }
+        return 0;
     }
 
     // Convert a database row into a Country object
