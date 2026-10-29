@@ -80,6 +80,36 @@ public class CapitalCityReports {
 
         return cities;
     }
+    // Report #24: All capital cities in a region by population
+    public List<City> getCapitalCitiesInRegionByPopulation(
+            Connection con, String region) {
+
+        List<City> cities = new ArrayList<>();
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM country co " +
+                        "JOIN city ci ON co.Capital = ci.ID " +
+                        "WHERE co.Region = ? " +
+                        "ORDER BY ci.Population DESC, ci.Name ASC";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, region);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Report #24: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
 
     // Convert a database row into a City object
     private City mapCity(ResultSet rset) throws SQLException {
