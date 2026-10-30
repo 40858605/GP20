@@ -6,6 +6,7 @@ public class City {
     private String district;
     private long population;
 
+    //this is for testing CI
     public City(String name, String country, String district, long population) {
         this.name = name;
         this.country = country;
