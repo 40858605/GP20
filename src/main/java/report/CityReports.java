@@ -1,18 +1,20 @@
 package report;
 
 import com.napier.sem.City;
+import com.napier.sem.PopulationBreakdown;
 
+import java.sql.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement; // Added import for Statement
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CityReports {
 
-    // Task #12: All cities in the world by population
+    // Issue #12: All cities in the world by population (40858605)
     public List<City> getAllCitiesInWorldByPopulation(Connection con) {
         List<City> cities = new ArrayList<>();
 
@@ -38,7 +40,7 @@ public class CityReports {
         return cities;
     }
 
-    // Issue#15: Report of all cities in a country (Aw-Thu-Linn)
+    // Issue #15: All cities in a country by population (Aw-Thu-Linn)
     public List<City> getCitiesInCountryByPopulation(
             Connection con, String countryName) {
 
@@ -69,7 +71,7 @@ public class CityReports {
         return cities;
     }
 
-    // Issue#16: Report of all cities in a district (Aw-Thu-Linn)
+    // Issue #16: All cities in a district by population (Aw-Thu-Linn)
     public List<City> getCitiesInDistrictByPopulation(
             Connection con, String districtName) {
 
@@ -95,6 +97,70 @@ public class CityReports {
         } catch (SQLException e) {
             System.out.println(
                     "Error running Task #16: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Issue #17: Top N cities in the world by population (Aw-Thu-Linn)
+    public List<City> getTopNCitiesByPopulation(
+            Connection con, int n) {
+
+        List<City> cities = new ArrayList<>();
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "ORDER BY ci.Population DESC, ci.Name ASC " +
+                        "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setInt(1, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #17: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Issue #18: Top N cities in a continent by population (Aw-Thu-Linn)
+    public List<City> getTopNCitiesInContinentByPopulation(
+            Connection con, String continent, int n) {
+
+        List<City> cities = new ArrayList<>();
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "WHERE co.Continent = ? " +
+                        "ORDER BY ci.Population DESC, ci.Name ASC " +
+                        "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, continent);
+            stmt.setInt(2, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #18: " + e.getMessage());
         }
 
         return cities;
@@ -246,6 +312,30 @@ public class CityReports {
                 "\nTop " + n + " populated capital cities in " + continent);
 
         printResults(cities);
+    }
+    // Report #32: Total population of a specific district
+    public long getTotalPopulationOfDistrict(
+            Connection con, String districtName) {
+
+        String sql =
+                "SELECT COALESCE(SUM(Population), 0) AS TotalPopulation " +
+                        "FROM city " +
+                        "WHERE District = ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, districtName);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                if (rset.next()) {
+                    return rset.getLong("TotalPopulation");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Report #32: " + e.getMessage());
+        }
+
+        return 0;
     }
 
     // Convert a database row into a City object
