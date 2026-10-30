@@ -41,9 +41,13 @@ public class App {
             // Raven
             System.out.println("13. Top N cities in a region");
             System.out.println("14. Population of a specific city");
-            //
+            // Phone-myint-myat-307
+            System.out.println("15. Urban vs. Rural population breakdown by continent");
+            System.out.println("16. Urban vs. Rural population breakdown by region");
+            System.out.println("17. Urban vs. Rural population breakdown by country");
+            System.out.println("18. Total population of a specific region");
             System.out.println("0. Exit");
-            System.out.print("Select an option (0-14): ");
+            System.out.print("Select an option (0-18): ");
 
             String input = scanner.nextLine().trim();
             int choice;
@@ -51,7 +55,7 @@ public class App {
             try {
                 choice = Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number (0-17).");
+                System.out.println("Invalid input. Please enter a valid number (0-18).");
                 continue;
             }
 
@@ -304,9 +308,11 @@ public class App {
                                 cityName, population);
                     }
 
-                  
+                    break;
+                }
+
                 // Issue #6: Urban vs. Rural population breakdown for each continent (phone-myint-myat-307)
-                case 14: {
+                case 15: {
                     System.out.println("\nExecuting: Urban vs. Rural population breakdown by continent...\n");
                     List<PopulationBreakdown> breakdownList = countryReports.getUrbanRuralByContinent(db.getConnection());
 
@@ -323,7 +329,7 @@ public class App {
                 }
 
                 // Issue #7: Urban vs. Rural population breakdown for each region (phone-myint-myat-307)
-                case 15: {
+                case 16: {
                     System.out.println("\nExecuting: Urban vs. Rural population breakdown by region...\n");
                     List<PopulationBreakdown> breakdownList = countryReports.getUrbanRuralByRegion(db.getConnection());
 
@@ -340,7 +346,7 @@ public class App {
                 }
 
                 // Issue #8: Urban vs. Rural population breakdown for each country (phone-myint-myat-307)
-                case 16: {
+                case 17: {
                     System.out.println("\nExecuting: Urban vs. Rural population breakdown by country...\n");
                     List<PopulationBreakdown> breakdownList = countryReports.getUrbanRuralByCountry(db.getConnection());
 
@@ -357,7 +363,7 @@ public class App {
                 }
 
                 // Issue #30: Total population of a specific region (phone-myint-myat-307)
-                case 17: {
+                case 18: {
                     System.out.print("Enter Region name (e.g., Caribbean, Western Europe): ");
                     String regionName = scanner.nextLine().trim();
 
@@ -381,7 +387,7 @@ public class App {
                     break;
 
                 default:
-                    System.out.println("Invalid option. Please choose a number between 0 and 17.");
+                    System.out.println("Invalid option. Please choose a number between 0 and 18.");
             }
         }
 
