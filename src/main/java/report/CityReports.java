@@ -71,68 +71,6 @@ public class CityReports {
         return cities;
     }
 
-    // Issue #16: All cities in a district by population (Aw-Thu-Linn)
-    public List<City> getCitiesInDistrictByPopulation(
-            Connection con, String districtName) {
-
-        List<City> cities = new ArrayList<>();
-
-        String sql =
-                "SELECT ci.Name, co.Name AS Country, " +
-                        "ci.District, ci.Population " +
-                        "FROM city ci " +
-                        "JOIN country co ON ci.CountryCode = co.Code " +
-                        "WHERE ci.District = ? " +
-                        "ORDER BY ci.Population DESC, ci.Name ASC";
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, districtName);
-
-            try (ResultSet rset = stmt.executeQuery()) {
-                while (rset.next()) {
-                    cities.add(mapCity(rset));
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println(
-                    "Error running Task #16: " + e.getMessage());
-        }
-
-        return cities;
-    }
-
-    // Issue #17: Top N cities in the world by population (Aw-Thu-Linn)
-    public List<City> getTopNCitiesByPopulation(
-            Connection con, int n) {
-
-        List<City> cities = new ArrayList<>();
-
-        String sql =
-                "SELECT ci.Name, co.Name AS Country, " +
-                        "ci.District, ci.Population " +
-                        "FROM city ci " +
-                        "JOIN country co ON ci.CountryCode = co.Code " +
-                        "ORDER BY ci.Population DESC, ci.Name ASC " +
-                        "LIMIT ?";
-
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setInt(1, n);
-
-            try (ResultSet rset = stmt.executeQuery()) {
-                while (rset.next()) {
-                    cities.add(mapCity(rset));
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println(
-                    "Error running Task #17: " + e.getMessage());
-        }
-
-        return cities;
-    }
-
     // Issue #18: Top N cities in a continent by population (Aw-Thu-Linn)
     public List<City> getTopNCitiesInContinentByPopulation(
             Connection con, String continent, int n) {
