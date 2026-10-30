@@ -166,6 +166,66 @@ public class CityReports {
         return cities;
     }
 
+
+    // Issue#19: Top N populated cities in a region (Aw-Thu-Linn)
+    public List<City> getTopNCitiesInRegionByPopulation(
+            Connection con, String region, int n) {
+
+        List<City> cities = new ArrayList<>();
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "WHERE co.Region = ? " +
+                        "ORDER BY ci.Population DESC, ci.Name ASC " +
+                        "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, region);
+            stmt.setInt(2, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #19: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Issue#33: Total population of a specific city (Aw-Thu-Linn)
+    public Long getPopulationOfCity(Connection con, String cityName) {
+
+        String sql =
+                "SELECT Population " +
+                        "FROM city " +
+                        "WHERE Name = ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, cityName);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                if (rset.next()) {
+                    return rset.getLong("Population");
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #33: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+
     // Issue#20: Top N populated cities in a country (Thaw-Zin-Soe)
     public static void printTopNCitiesInCountry(
             Connection conn, String countryName, int n)
@@ -313,7 +373,7 @@ public class CityReports {
 
         printResults(cities);
     }
-    // Report #32: Total population of a specific district (Thaw-Zin-Soe)
+    // Report #32: Total population of a specific district
     public long getTotalPopulationOfDistrict(
             Connection con, String districtName) {
 
