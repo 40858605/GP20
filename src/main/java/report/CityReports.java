@@ -313,7 +313,7 @@ public class CityReports {
 
         printResults(cities);
     }
-    // Report #32: Total population of a specific district
+    // Report #32: Total population of a specific district (Thaw-Zin-Soe)
     public long getTotalPopulationOfDistrict(
             Connection con, String districtName) {
 
