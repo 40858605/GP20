@@ -80,6 +80,7 @@ public class CapitalCityReports {
 
         return cities;
     }
+
     // Issue #24: All capital cities in a region by population (Thaw-Zin-Soe)
     public List<City> getCapitalCitiesInRegionByPopulation(
             Connection con, String region) {
@@ -93,6 +94,11 @@ public class CapitalCityReports {
                         "JOIN city ci ON co.Capital = ci.ID " +
                         "WHERE co.Region = ? " +
                         "ORDER BY ci.Population DESC, ci.Name ASC";
+
+        if (con == null) {
+            System.out.println("Database connection is null.");
+            return cities; 
+        }                
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, region);
@@ -123,6 +129,11 @@ public class CapitalCityReports {
 
     // Display report results
     public void printResults(List<City> cities) {
+
+        if (cities == null) {
+            System.out.println("No cities provided");
+            return;
+        }
 
         if (cities.isEmpty()) {
             System.out.println(

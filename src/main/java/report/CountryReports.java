@@ -15,6 +15,11 @@ public class CountryReports {
 
     // Issue#3 All countries in the world by population (phone-myint-myat-307)
     public List<Country> getAllCountriesByPopulation(Connection con) {
+        if (con == null) {
+            System.out.println("Database connection is null.");
+            return new ArrayList<>(); 
+        }        
+        
         List<Country> countries = new ArrayList<>();
 
         String sql = "SELECT c.Code, c.Name, c.Continent, c.Region, " +
@@ -39,6 +44,11 @@ public class CountryReports {
     // Issue#4 All countries in a continent by population (phone-myint-myat-307)
     public List<Country> getCountriesInContinentByPopulation(
             Connection con, String continent) {
+
+       if (con == null) {
+            System.out.println("Database connection is null.");
+            return new ArrayList<>(); 
+        }
 
         List<Country> countries = new ArrayList<>();
 
@@ -69,6 +79,12 @@ public class CountryReports {
             Connection con, int n) {
 
         List<Country> countries = new ArrayList<>();
+  
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return countries; 
+        }
+
 
         String sql = "SELECT c.Code, c.Name, c.Continent, c.Region, " +
                 "c.Population, ci.Name AS Capital " +
@@ -97,6 +113,11 @@ public class CountryReports {
             Connection con, String continent, int n) {
 
         List<Country> countries = new ArrayList<>();
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return countries; 
+        }
 
         String sql = "SELECT c.Code, c.Name, c.Continent, c.Region, " +
                 "c.Population, ci.Name AS Capital " +
@@ -128,6 +149,11 @@ public class CountryReports {
 
         List<Country> countries = new ArrayList<>();
 
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return countries; 
+        }
+
         String sql = "SELECT c.Code, c.Name, c.Continent, c.Region, " +
                 "c.Population, ci.Name AS Capital " +
                 "FROM country c LEFT JOIN city ci ON c.Capital = ci.ID " +
@@ -154,7 +180,13 @@ public class CountryReports {
 
     // Issue#5 All countries in a region by population (largest to smallest) (phone-myint-myat-307)
     public List<Country> getCountriesInRegionByPopulation(Connection con, String region) {
+        if (con == null) {
+            System.out.println("Database connection is null.");
+            return new ArrayList<>(); 
+        }
+        
         List<Country> countries = new ArrayList<>();
+
         String sql = "SELECT c.Code, c.Name, c.Continent, c.Region, c.Population, ci.Name AS Capital " +
                 "FROM country c LEFT JOIN city ci ON c.Capital = ci.ID " +
                 "WHERE c.Region = ? ORDER BY c.Population DESC";
@@ -182,8 +214,13 @@ public class CountryReports {
 
     // Issue #6 Urban vs. Rural population breakdown for each continent (sprint 2) (phone-myint-myat-307)
     public List<PopulationBreakdown> getUrbanRuralByContinent(Connection con) {
+        if (con == null) {
+            System.out.println("Database connection is null.");
+            return new ArrayList<>(); 
+        }
 
         List<PopulationBreakdown> report = new ArrayList<>();
+
         String sql = "SELECT c.Continent AS Name, " +
                 "SUM(c.Population) AS TotalPop, " +
                 "SUM(COALESCE(city_pop.TotalCityPop, 0)) AS CityPop, " +
@@ -214,7 +251,13 @@ public class CountryReports {
 
     // Issue#7 Urban vs. Rural population breakdown for each region (sprint 3) (phone-myint-myat-307)
     public List<PopulationBreakdown> getUrbanRuralByRegion(Connection con) {
+        if (con == null) {
+            System.out.println("Database connection is null.");
+            return new ArrayList<>(); 
+        }
+        
         List<PopulationBreakdown> report = new ArrayList<>();
+
         String sql = "SELECT c.Region AS Name, " +
                 "SUM(c.Population) AS TotalPop, " +
                 "SUM(COALESCE(city_pop.TotalCityPop, 0)) AS CityPop, " +
@@ -242,7 +285,13 @@ public class CountryReports {
 
     // Issue#8 Urban vs. Rural population breakdown for each country (sprint 3) (phone-myint-myat-307)
     public List<PopulationBreakdown> getUrbanRuralByCountry(Connection con) {
+        if (con == null) {
+            System.out.println("Database connection is null.");
+            return new ArrayList<>(); 
+        }
+        
         List<PopulationBreakdown> report = new ArrayList<>();
+
         String sql = "SELECT c.Name AS Name, " +
                 "c.Population AS TotalPop, " +
                 "COALESCE(city_pop.TotalCityPop, 0) AS CityPop, " +
@@ -270,6 +319,12 @@ public class CountryReports {
     // Issue#30 Access the total population of a specific region (sprint 3) (phone-myint-myat-307)
     public long getTotalPopulationOfRegion(Connection con, String region) {
         String sql = "SELECT SUM(Population) AS TotalPopulation FROM country WHERE Region = ?";
+
+        if (con == null) {
+            System.out.println("Database connection is null.");
+            return 0L;
+        }
+
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, region);
             try (ResultSet rset = stmt.executeQuery()) {
@@ -285,9 +340,10 @@ public class CountryReports {
 
     // Issue #31: Access the total population of a specific country (40858605)
     public long getTotalPopulationOfCountry(Connection con, String countryName) {
+        
         if (con == null) {
             System.out.println("Database connection is not available.");
-            return 0;
+            return 0L;
         }
 
         String sql = "SELECT Population FROM country WHERE Name = ?";
@@ -318,4 +374,31 @@ public class CountryReports {
                 rset.getString("Capital")
         );
     }
+
+    // Print a list of countries
+    public static void printResults(List<Country> countries) {
+            
+        if (countries == null) {
+            System.out.println("No countries provided.");
+            return;
+        }
+            
+        if (countries.isEmpty()) {
+            System.out.println("No matching countries found.");
+            return;
+        }
+
+        System.out.printf(
+                "%-5s %-45s %-20s %-25s %-12s %-20s%n",
+                "Code", "Name", "Continent", "Region", "Population", "Capital");
+
+        System.out.println(
+                "-------------------------------------------------------------------------------------------------------------------------------");
+
+        for (Country country : countries) {
+            if (country == null) continue;
+            System.out.println(country);
+        }
+    }
+    
 }

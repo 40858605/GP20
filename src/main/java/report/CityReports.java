@@ -18,6 +18,11 @@ public class CityReports {
     public List<City> getAllCitiesInWorldByPopulation(Connection con) {
         List<City> cities = new ArrayList<>();
 
+        if (con == null) {
+            System.out.println("Database connection is not available");
+            return cities; 
+        }
+
         String sql =
                 "SELECT ci.Name, co.Name AS Country, " +
                         "ci.District, ci.Population " +
@@ -118,6 +123,11 @@ public class CityReports {
 
         List<City> cities = new ArrayList<>();
 
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
+
         String sql =
                 "SELECT ci.Name, co.Name AS Country, " +
                         "ci.District, ci.Population " +
@@ -185,6 +195,11 @@ public class CityReports {
 
         List<City> cities = new ArrayList<>();
 
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
+
         String sql =
                 "SELECT ci.Name, co.Name AS Country, " +
                         "ci.District, ci.Population " +
@@ -215,6 +230,11 @@ public class CityReports {
             Connection con, String continent, int n) {
 
         List<City> cities = new ArrayList<>();
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
 
         String sql =
                 "SELECT ci.Name, co.Name AS Country, " +
@@ -250,6 +270,11 @@ public class CityReports {
 
         List<City> cities = new ArrayList<>();
 
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
+
         String sql =
                 "SELECT ci.Name, co.Name AS Country, " +
                         "ci.District, ci.Population " +
@@ -280,6 +305,11 @@ public class CityReports {
     // Issue#33: Total population of a specific city (Aw-Thu-Linn)
     public Long getPopulationOfCity(Connection con, String cityName) {
 
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return 0L;
+        }
+
         String sql =
                 "SELECT Population " +
                         "FROM city " +
@@ -307,6 +337,11 @@ public class CityReports {
     public static void printTopNCitiesInCountry(
             Connection conn, String countryName, int n)
             throws SQLException {
+
+        if (conn == null) {
+            System.out.println("Database connection is not available.");
+            return;
+        }
 
         String sql = """
                 SELECT ci.Name,
@@ -345,6 +380,11 @@ public class CityReports {
             Connection conn, String districtName, int n)
             throws SQLException {
 
+        if (conn == null) {
+            System.out.println("Database connection is not available.");
+            return;
+        }
+
         String sql = """
                 SELECT ci.Name,
                        co.Name AS Country,
@@ -382,6 +422,11 @@ public class CityReports {
     public static void printTopNCapitalCitiesInWorld(
             Connection conn, int n) throws SQLException {
 
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return;
+        }
+
         String sql = """
                 SELECT ci.Name,
                        co.Name AS Country,
@@ -418,6 +463,11 @@ public class CityReports {
             Connection conn, String continent, int n)
             throws SQLException {
 
+        if (conn == null) {
+            System.out.println("Database connection is not available.");
+            return;
+        }
+
         String sql = """
                 SELECT ci.Name,
                        co.Name AS Country,
@@ -450,10 +500,15 @@ public class CityReports {
 
         printResults(cities);
     }
+
     // Issue #32: Total population of a specific district (Thaw-Zin-Soe)
     public long getTotalPopulationOfDistrict(
             Connection con, String districtName) {
 
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return 0L;
+        }
         String sql =
                 "SELECT COALESCE(SUM(Population), 0) AS TotalPopulation " +
                         "FROM city " +
@@ -486,7 +541,13 @@ public class CityReports {
     }
 
     // Print a list of cities
-    private static void printResults(List<City> cities) {
+    public static void printResults(List<City> cities) {
+        
+        if (cities == null) {
+            System.out.println("No cities provided");
+            return;
+        }
+        
         if (cities.isEmpty()) {
             System.out.println("No matching cities found.");
             return;
