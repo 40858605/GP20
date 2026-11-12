@@ -80,7 +80,7 @@ public class CapitalCityReports {
 
         return cities;
     }
-    // Report #24: All capital cities in a region by population
+    // Issue #24: All capital cities in a region by population (Thaw-Zin-Soe)
     public List<City> getCapitalCitiesInRegionByPopulation(
             Connection con, String region) {
 
