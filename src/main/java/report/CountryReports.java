@@ -283,6 +283,30 @@ public class CountryReports {
         return 0;
     }
 
+    // Issue #31: Access the total population of a specific country (40858605)
+    public long getTotalPopulationOfCountry(Connection con, String countryName) {
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return 0;
+        }
+
+        String sql = "SELECT Population FROM country WHERE Name = ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, countryName);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                if (rset.next()) {
+                    return rset.getLong("Population");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error running Task #31: " + e.getMessage());
+        }
+
+        return 0;
+    }
+
     // Convert a database row into a Country object
     private Country mapCountry(ResultSet rset) throws SQLException {
         return new Country(
