@@ -450,6 +450,45 @@ public class CityReports {
 
         printResults(cities);
     }
+
+    // Issue#27: Top N populated capital cities in a region (winhponeemyat202104-del)
+    public static void printTopNCapitalCitiesInRegion(
+            Connection conn, String region, int n)
+            throws SQLException {
+
+        String sql = """
+                SELECT ci.Name,
+                       co.Name AS Country,
+                       ci.District,
+                       ci.Population
+                FROM city ci
+                JOIN country co
+                    ON ci.CountryCode = co.Code
+                WHERE co.Capital = ci.ID
+                  AND co.Region = ?
+                ORDER BY ci.Population DESC, ci.Name ASC
+                LIMIT ?
+                """;
+
+        List<City> cities = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, region);
+            stmt.setInt(2, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+        }
+
+        System.out.println(
+                "\nTop " + n + " populated capital cities in " + region);
+
+        printResults(cities);
+    }
+
     // Report #32: Total population of a specific district
     public long getTotalPopulationOfDistrict(
             Connection con, String districtName) {
