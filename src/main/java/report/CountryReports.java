@@ -267,6 +267,48 @@ public class CountryReports {
         return report;
     }
 
+    // Issue #28: Access the total world population count (winhponeemyat202104-del)
+    public long getTotalWorldPopulation(Connection con) {
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return 0;
+        }
+
+        String sql = "SELECT SUM(Population) AS TotalPopulation FROM country";
+
+        try (Statement stmt = con.createStatement();
+             ResultSet rset = stmt.executeQuery(sql)) {
+            if (rset.next()) {
+                return rset.getLong("TotalPopulation");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error running Task #28: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    // Issue #29: Access the total population of a specific continent (winhponeemyat202104-del)
+    public long getTotalPopulationOfContinent(Connection con, String continent) {
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return 0;
+        }
+
+        String sql = "SELECT SUM(Population) AS TotalPopulation FROM country WHERE Continent = ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, continent);
+            try (ResultSet rset = stmt.executeQuery()) {
+                if (rset.next()) {
+                    return rset.getLong("TotalPopulation");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error running Task #29: " + e.getMessage());
+        }
+        return 0;
+    }
+
     // Issue#30 Access the total population of a specific region (sprint 3) (phone-myint-myat-307)
     public long getTotalPopulationOfRegion(Connection con, String region) {
         String sql = "SELECT SUM(Population) AS TotalPopulation FROM country WHERE Region = ?";
