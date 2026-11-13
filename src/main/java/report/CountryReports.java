@@ -407,4 +407,25 @@ public class CountryReports {
                 rset.getString("Capital")
         );
     }
+
+    // Print a list of countries
+    public static void printResults(List<Country> countries) {
+        if (countries == null) {
+            System.out.println("No countries provided.");
+            return;
+        }
+        if (countries.isEmpty()) {
+            System.out.println("No matching countries found.");
+            return;
+        }
+        System.out.printf(
+                "%-5s %-45s %-20s %-25s %-12s %-20s%n",
+                "Code", "Name", "Continent", "Region", "Population", "Capital");
+        System.out.println(
+                "-------------------------------------------------------------------------------------------------------------------------------");
+        for (Country country : countries) {
+            if (country == null) continue;
+            System.out.println(country);
+        }
+    }
 }

@@ -580,7 +580,7 @@ public class CityReports {
     }
 
     // Print a list of cities
-    private static void printResults(List<City> cities) {
+    public static void printResults(List<City> cities) {
         if (cities == null || cities.isEmpty()) {
             System.out.println("No matching cities found.");
             return;
