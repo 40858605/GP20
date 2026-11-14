@@ -1,4 +1,3 @@
-
 package report;
 
 import com.napier.sem.City;
@@ -12,10 +11,15 @@ import java.util.List;
 
 public class CapitalCityReports {
 
-    //Issue:4 or Report #22: All capital cities worldwide by population (Thaw-Zin-Soe)
+    // Issue #22: All capital cities worldwide by population (Thaw-Zin-Soe)
     public List<City> getCapitalCitiesInWorldByPopulation(Connection con) {
 
         List<City> cities = new ArrayList<>();
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
 
         String sql =
                 "SELECT ci.Name, co.Name AS Country, " +
@@ -23,11 +27,6 @@ public class CapitalCityReports {
                         "FROM country co " +
                         "JOIN city ci ON co.Capital = ci.ID " +
                         "ORDER BY ci.Population DESC, ci.Name ASC";
-
-        if (con == null) {
-            System.out.println("Database connection is not available.");
-            return cities;
-        }
 
         try (PreparedStatement stmt = con.prepareStatement(sql);
              ResultSet rset = stmt.executeQuery()) {
@@ -44,11 +43,16 @@ public class CapitalCityReports {
         return cities;
     }
 
-    //Issue:5 or Report #23: All capital cities in a continent by population (Thaw-Zin-Soe)
+    // Issue #23: All capital cities in a continent by population (Thaw-Zin-Soe)
     public List<City> getCapitalCitiesInContinentByPopulation(
             Connection con, String continent) {
 
         List<City> cities = new ArrayList<>();
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
 
         String sql =
                 "SELECT ci.Name, co.Name AS Country, " +
@@ -57,11 +61,6 @@ public class CapitalCityReports {
                         "JOIN city ci ON co.Capital = ci.ID " +
                         "WHERE co.Continent = ? " +
                         "ORDER BY ci.Population DESC, ci.Name ASC";
-
-        if (con == null) {
-            System.out.println("Database connection is not available.");
-            return cities;
-        }
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
 
@@ -80,11 +79,17 @@ public class CapitalCityReports {
 
         return cities;
     }
+
     // Issue #24: All capital cities in a region by population (Thaw-Zin-Soe)
     public List<City> getCapitalCitiesInRegionByPopulation(
             Connection con, String region) {
 
         List<City> cities = new ArrayList<>();
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
 
         String sql =
                 "SELECT ci.Name, co.Name AS Country, " +
@@ -110,7 +115,6 @@ public class CapitalCityReports {
         return cities;
     }
 
-
     // Convert a database row into a City object
     private City mapCity(ResultSet rset) throws SQLException {
         return new City(
@@ -124,7 +128,7 @@ public class CapitalCityReports {
     // Display report results
     public void printResults(List<City> cities) {
 
-        if (cities.isEmpty()) {
+        if (cities == null || cities.isEmpty()) {
             System.out.println(
                     "No matching capital cities found.");
             return;

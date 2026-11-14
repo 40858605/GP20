@@ -38,7 +38,7 @@ public class LanguageReports {
                 long speakers = rset.getLong("Speakers");
                 double worldPercentage = rset.getDouble("WorldPercentage");
 
-                System.out.printf("%-15s %, -20d %.2f%%%n",
+                System.out.printf("%-15s %,-20d %.2f%%%n",
                         language, speakers, worldPercentage);
             }
 
