@@ -6,16 +6,125 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CityReports {
 
-    // Task #15: All cities in a country by population (Aw-Thu-Linn)
+    // Issue #12: All cities in the world by population (40858605)
+    public List<City> getAllCitiesInWorldByPopulation(Connection con) {
+        List<City> cities = new ArrayList<>();
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "ORDER BY ci.Population DESC";
+
+        try (Statement stmt = con.createStatement();
+             ResultSet rset = stmt.executeQuery(sql)) {
+
+            while (rset.next()) {
+                cities.add(mapCity(rset));
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #12: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Issue #13: All cities in a continent by population (40858605)
+    public List<City> getCitiesInContinentByPopulation(
+            Connection con, String continent) {
+
+        List<City> cities = new ArrayList<>();
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "WHERE co.Continent = ? " +
+                        "ORDER BY ci.Population DESC, ci.Name ASC";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, continent);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #13: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Issue #14: All cities in a region by population (40858605)
+    public List<City> getCitiesInRegionByPopulation(
+            Connection con, String region) {
+
+        List<City> cities = new ArrayList<>();
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "WHERE co.Region = ? " +
+                        "ORDER BY ci.Population DESC, ci.Name ASC";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, region);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #14: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Issue #15: All cities in a country by population (Aw-Thu-Linn)
     public List<City> getCitiesInCountryByPopulation(
             Connection con, String countryName) {
 
         List<City> cities = new ArrayList<>();
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
 
         String sql =
                 "SELECT ci.Name, co.Name AS Country, " +
@@ -42,11 +151,16 @@ public class CityReports {
         return cities;
     }
 
-    // Task #16: All cities in a district by population (Aw-Thu-Linn)
+    // Issue #16: All cities in a district by population (Aw-Thu-Linn)
     public List<City> getCitiesInDistrictByPopulation(
-            Connection con, String districtName) {
+            Connection con, String district) {
 
         List<City> cities = new ArrayList<>();
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
 
         String sql =
                 "SELECT ci.Name, co.Name AS Country, " +
@@ -57,7 +171,7 @@ public class CityReports {
                         "ORDER BY ci.Population DESC, ci.Name ASC";
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, districtName);
+            stmt.setString(1, district);
 
             try (ResultSet rset = stmt.executeQuery()) {
                 while (rset.next()) {
@@ -73,10 +187,126 @@ public class CityReports {
         return cities;
     }
 
-    // Issue#20: Top N populated cities in a country (Thaw-Zin-Soe)
+    // Issue #17: Top N populated cities in the world (Aw-Thu-Linn)
+    public List<City> getTopNCitiesWorldwide(
+            Connection connection, int n) {
+
+        List<City> cities = new ArrayList<>();
+
+        if (connection == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "ORDER BY ci.Population DESC, ci.Name ASC " +
+                        "LIMIT ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #17: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Issue #18: Top N cities in a continent by population (Aw-Thu-Linn)
+    public List<City> getTopNCitiesInContinentByPopulation(
+            Connection con, String continent, int n) {
+
+        List<City> cities = new ArrayList<>();
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "WHERE co.Continent = ? " +
+                        "ORDER BY ci.Population DESC, ci.Name ASC " +
+                        "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, continent);
+            stmt.setInt(2, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #18: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Issue #19: Top N populated cities in a region (Aw-Thu-Linn)
+    public List<City> getTopNCitiesInRegionByPopulation(
+            Connection con, String region, int n) {
+
+        List<City> cities = new ArrayList<>();
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return cities;
+        }
+
+        String sql =
+                "SELECT ci.Name, co.Name AS Country, " +
+                        "ci.District, ci.Population " +
+                        "FROM city ci " +
+                        "JOIN country co ON ci.CountryCode = co.Code " +
+                        "WHERE co.Region = ? " +
+                        "ORDER BY ci.Population DESC, ci.Name ASC " +
+                        "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, region);
+            stmt.setInt(2, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #19: " + e.getMessage());
+        }
+
+        return cities;
+    }
+
+    // Issue #20: Top N populated cities in a country (Thaw-Zin-Soe)
     public static void printTopNCitiesInCountry(
             Connection conn, String countryName, int n)
             throws SQLException {
+
+        if (conn == null) {
+            System.out.println("Database connection is not available.");
+            return;
+        }
 
         String sql = """
                 SELECT ci.Name,
@@ -110,10 +340,15 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Issue#21: Top N populated cities in a district (Thaw-Zin-Soe)
+    // Issue #21: Top N populated cities in a district (Thaw-Zin-Soe)
     public static void printTopNCitiesInDistrict(
             Connection conn, String districtName, int n)
             throws SQLException {
+
+        if (conn == null) {
+            System.out.println("Database connection is not available.");
+            return;
+        }
 
         String sql = """
                 SELECT ci.Name,
@@ -148,9 +383,14 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Issue#25: Top N populated capital cities in the world (winhponeemyat202104-del)
+    // Issue #25: Top N populated capital cities in the world (winhponeemyat202104-del)
     public static void printTopNCapitalCitiesInWorld(
             Connection conn, int n) throws SQLException {
+
+        if (conn == null) {
+            System.out.println("Database connection is not available.");
+            return;
+        }
 
         String sql = """
                 SELECT ci.Name,
@@ -183,10 +423,15 @@ public class CityReports {
         printResults(cities);
     }
 
-    // Issue#26: Top N populated capital cities in a continent (winhponeemyat202104-del)
+    // Issue #26: Top N populated capital cities in a continent (winhponeemyat202104-del)
     public static void printTopNCapitalCitiesInContinent(
             Connection conn, String continent, int n)
             throws SQLException {
+
+        if (conn == null) {
+            System.out.println("Database connection is not available.");
+            return;
+        }
 
         String sql = """
                 SELECT ci.Name,
@@ -221,6 +466,109 @@ public class CityReports {
         printResults(cities);
     }
 
+    // Issue #27: Top N populated capital cities in a region (winhponeemyat202104-del)
+    public static void printTopNCapitalCitiesInRegion(
+            Connection conn, String region, int n)
+            throws SQLException {
+
+        if (conn == null) {
+            System.out.println("Database connection is not available.");
+            return;
+        }
+
+        String sql = """
+                SELECT ci.Name,
+                       co.Name AS Country,
+                       ci.District,
+                       ci.Population
+                FROM city ci
+                JOIN country co
+                    ON ci.CountryCode = co.Code
+                WHERE co.Capital = ci.ID
+                  AND co.Region = ?
+                ORDER BY ci.Population DESC, ci.Name ASC
+                LIMIT ?
+                """;
+
+        List<City> cities = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, region);
+            stmt.setInt(2, n);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    cities.add(mapCity(rset));
+                }
+            }
+        }
+
+        System.out.println(
+                "\nTop " + n + " populated capital cities in " + region);
+
+        printResults(cities);
+    }
+
+    // Issue #32: Total population of a specific district (Thaw-Zin-Soe)
+    public long getTotalPopulationOfDistrict(
+            Connection con, String districtName) {
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return 0;
+        }
+
+        String sql =
+                "SELECT COALESCE(SUM(Population), 0) AS TotalPopulation " +
+                        "FROM city " +
+                        "WHERE District = ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, districtName);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                if (rset.next()) {
+                    return rset.getLong("TotalPopulation");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Report #32: " + e.getMessage());
+        }
+
+        return 0;
+    }
+
+    // Issue #33: Total population of a specific city (Aw-Thu-Linn)
+    public Long getPopulationOfCity(Connection con, String cityName) {
+
+        if (con == null) {
+            System.out.println("Database connection is not available.");
+            return null;
+        }
+
+        String sql =
+                "SELECT Population " +
+                        "FROM city " +
+                        "WHERE Name = ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, cityName);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                if (rset.next()) {
+                    return rset.getLong("Population");
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println(
+                    "Error running Task #33: " + e.getMessage());
+        }
+
+        return null;
+    }
+
     // Convert a database row into a City object
     private static City mapCity(ResultSet rset) throws SQLException {
         return new City(
@@ -232,8 +580,8 @@ public class CityReports {
     }
 
     // Print a list of cities
-    private static void printResults(List<City> cities) {
-        if (cities.isEmpty()) {
+    public static void printResults(List<City> cities) {
+        if (cities == null || cities.isEmpty()) {
             System.out.println("No matching cities found.");
             return;
         }
