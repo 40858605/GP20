@@ -41,4 +41,66 @@ public class CityReportsTest {
         cities.add(city);
         CityReports.printResults(cities);
     }
+
+    // Issue #15: Test cities in a country with null connection
+    @Test
+    void getCitiesInCountryByPopulationTestNullConnection() {
+        List<City> cities =
+                cityReports.getCitiesInCountryByPopulation(null, "Myanmar");
+
+        assertNotNull(cities);
+        assertTrue(cities.isEmpty());
+    }
+
+    // Issue #16: Test cities in a district with null connection
+    @Test
+    void getCitiesInDistrictByPopulationTestNullConnection() {
+        List<City> cities =
+                cityReports.getCitiesInDistrictByPopulation(null, "Mandalay");
+
+        assertNotNull(cities);
+        assertTrue(cities.isEmpty());
+    }
+
+    // Issue #17: Test top N cities worldwide with null connection
+    @Test
+    void getTopNCitiesWorldwideTestNullConnection() {
+        List<City> cities =
+                cityReports.getTopNCitiesWorldwide(null, 10);
+
+        assertNotNull(cities);
+        assertTrue(cities.isEmpty());
+    }
+
+    // Issue #18: Test top N cities in a continent with null connection
+    @Test
+    void getTopNCitiesInContinentByPopulationTestNullConnection() {
+        List<City> cities =
+                cityReports.getTopNCitiesInContinentByPopulation(
+                        null, "Asia", 10);
+
+        assertNotNull(cities);
+        assertTrue(cities.isEmpty());
+    }
+
+    // Issue #19: Test top N cities in a region with null connection
+    @Test
+    void getTopNCitiesInRegionByPopulationTestNullConnection() {
+        List<City> cities =
+                cityReports.getTopNCitiesInRegionByPopulation(
+                        null, "Southeast Asia", 10);
+
+        assertNotNull(cities);
+        assertTrue(cities.isEmpty());
+    }
+
+    // Issue #33: Test population of a specific city with null connection
+    @Test
+    void getPopulationOfCityTestNullConnection() {
+        Long population =
+                cityReports.getPopulationOfCity(null, "Mandalay");
+
+        assertNull(population);
+    }
+
 }
