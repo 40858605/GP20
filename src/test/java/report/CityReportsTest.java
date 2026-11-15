@@ -3,10 +3,17 @@ package report;
 import com.napier.sem.City;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the CityReports class.
+ * This test suite verifies the behavior of city report generation and printing methods
+ * when handling null database connections, empty collections, and valid city data
+ * without requiring an active database connection.
+ */
 public class CityReportsTest {
     static CityReports cityReports;
 
@@ -101,6 +108,75 @@ public class CityReportsTest {
                 cityReports.getPopulationOfCity(null, "Mandalay");
 
         assertNull(population);
+    }
+
+    // Issue #12: Test all cities in the world with null connection (40858605)
+    @Test
+    void getAllCitiesInWorldByPopulationTestNullConnection() {
+        List<City> cities =
+                cityReports.getAllCitiesInWorldByPopulation(null);
+
+        assertNotNull(cities);
+        assertTrue(cities.isEmpty());
+    }
+
+    // Issue #13: Test cities in a continent with null connection (40858605)
+    @Test
+    void getCitiesInContinentByPopulationTestNullConnection() {
+        List<City> cities =
+                cityReports.getCitiesInContinentByPopulation(null, "Asia");
+
+        assertNotNull(cities);
+        assertTrue(cities.isEmpty());
+    }
+
+    // Issue #14: Test cities in a region with null connection (40858605)
+    @Test
+    void getCitiesInRegionByPopulationTestNullConnection() {
+        List<City> cities =
+                cityReports.getCitiesInRegionByPopulation(null, "Southeast Asia");
+
+        assertNotNull(cities);
+        assertTrue(cities.isEmpty());
+    }
+
+    // Issue #20: Test printing top N cities in a country with null connection (40858605)
+    @Test
+    void printTopNCitiesInCountryTestNullConnection() throws SQLException {
+        CityReports.printTopNCitiesInCountry(null, "Myanmar", 10);
+    }
+
+    // Issue #21: Test printing top N cities in a district with null connection (40858605)
+    @Test
+    void printTopNCitiesInDistrictTestNullConnection() throws SQLException {
+        CityReports.printTopNCitiesInDistrict(null, "Mandalay", 10);
+    }
+
+    // Issue #25: Test printing top N capital cities in the world with null connection (40858605)
+    @Test
+    void printTopNCapitalCitiesInWorldTestNullConnection() throws SQLException {
+        CityReports.printTopNCapitalCitiesInWorld(null, 10);
+    }
+
+    // Issue #26: Test printing top N capital cities in a continent with null connection (40858605)
+    @Test
+    void printTopNCapitalCitiesInContinentTestNullConnection() throws SQLException {
+        CityReports.printTopNCapitalCitiesInContinent(null, "Asia", 10);
+    }
+
+    // Issue #27: Test printing top N capital cities in a region with null connection (40858605)
+    @Test
+    void printTopNCapitalCitiesInRegionTestNullConnection() throws SQLException {
+        CityReports.printTopNCapitalCitiesInRegion(null, "Southeast Asia", 10);
+    }
+
+    // Issue #32: Test total population of a specific district with null connection (40858605)
+    @Test
+    void getTotalPopulationOfDistrictTestNullConnection() {
+        long population =
+                cityReports.getTotalPopulationOfDistrict(null, "Mandalay");
+
+        assertEquals(0L, population);
     }
 
 }
