@@ -1,4 +1,3 @@
-
 package com.napier.sem;
 
 import report.CountryReports;
@@ -6,21 +5,71 @@ import report.CityReports;
 import report.CapitalCityReports;
 import report.LanguageReports;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
 public class App {
 
+    // Public connection exposed for Integration Testing
+    public Connection con = null;
+
     private static final String BORDER = "=".repeat(65);
     private static final String DIVIDER = "-".repeat(65);
 
+    // Dynamic Connect Method
+    public void connect(String location, int delay) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Could not load SQL driver");
+            System.exit(-1);
+        }
+
+        int retries = 10;
+        for (int i = 0; i < retries; ++i) {
+            System.out.println("Connecting to database...");
+            try {
+                Thread.sleep(delay);
+                con = DriverManager.getConnection("jdbc:mysql://" + location
+                                + "/world?allowPublicKeyRetrieval=true&useSSL=false",
+                        "root", "example");
+                System.out.println("Successfully connected");
+                break;
+            } catch (SQLException sqle) {
+                System.out.println("Failed to connect to database attempt " + Integer.toString(i));
+                System.out.println(sqle.getMessage());
+            } catch (InterruptedException ie) {
+                System.out.println("Thread interrupted? Should not happen.");
+            }
+        }
+    }
+
+    // Disconnect Method
+    public void disconnect() {
+        if (con != null) {
+            try {
+                con.close();
+            } catch (Exception e) {
+                System.out.println("Error closing connection to database");
+            }
+        }
+    }
+
     public static void main(String[] args) {
 
-        DatabaseHandler db = new DatabaseHandler();
-        db.connect();
+        App a = new App();
 
-        if (db.getConnection() == null) {
+        // Connect to database using command line arguments or default to localhost
+        if(args.length < 1){
+            a.connect("localhost:33060", 30000);
+        } else {
+            a.connect(args[0], Integer.parseInt(args[1]));
+        }
+
+        if (a.con == null) {
             System.out.println("Could not establish a database connection. Exiting...");
             return;
         }
@@ -57,47 +106,39 @@ public class App {
             }
 
             switch (choice) {
-
                 case 1:
-                    countryMenu(scanner, db, countryReports);
+                    countryMenu(scanner, a.con, countryReports);
                     break;
-
                 case 2:
-                    cityMenu(scanner, db, cityReports);
+                    cityMenu(scanner, a.con, cityReports);
                     break;
-
                 case 3:
-                    capitalMenu(scanner, db, cityReports, capitalReports);
+                    capitalMenu(scanner, a.con, cityReports, capitalReports);
                     break;
-
                 case 4:
-                    populationMenu(scanner, db, countryReports, cityReports);
+                    populationMenu(scanner, a.con, countryReports, cityReports);
                     break;
-
                 case 5:
-                    languageMenu(scanner, db, languageReports);
+                    languageMenu(scanner, a.con, languageReports);
                     break;
-
                 case 0:
                     running = false;
                     System.out.println("\nThank you for using World Database System!");
                     break;
-
                 default:
                     System.out.println("\nInvalid option. Please select 0-5.");
             }
         }
 
         scanner.close();
-        db.disconnect();
+        a.disconnect();
     }
 
-    // =========================================================
     // COUNTRY INFORMATION
-    // =========================================================
+    // ---------------------------------------------------------
 
     private static void countryMenu(
-            Scanner scanner, DatabaseHandler db, CountryReports reports) {
+            Scanner scanner, Connection con, CountryReports reports) {
 
         while (true) {
 
@@ -122,8 +163,7 @@ public class App {
             switch (choice) {
 
                 case 1:
-                    printCountryResults(
-                            reports.getAllCountriesByPopulation(db.getConnection()));
+                    printCountryResults(reports.getAllCountriesByPopulation(con));
                     break;
 
                 case 2: {
@@ -135,9 +175,7 @@ public class App {
                         break;
                     }
 
-                    printCountryResults(
-                            reports.getCountriesInContinentByPopulation(
-                                    db.getConnection(), continent));
+                    printCountryResults(reports.getCountriesInContinentByPopulation(con, continent));
                     break;
                 }
 
@@ -150,21 +188,16 @@ public class App {
                         break;
                     }
 
-                    printCountryResults(
-                            reports.getCountriesInRegionByPopulation(
-                                    db.getConnection(), region));
+                    printCountryResults(reports.getCountriesInRegionByPopulation(con, region));
                     break;
                 }
 
                 case 4: {
-                    Integer n = readPositiveInt(
-                            scanner, "Enter the number of countries: ");
+                    Integer n = readPositiveInt(scanner, "Enter the number of countries: ");
                     if (n == null) return;
                     if (n < 1) break;
 
-                    printCountryResults(
-                            reports.getTopNCountriesByPopulation(
-                                    db.getConnection(), n));
+                    printCountryResults(reports.getTopNCountriesByPopulation(con, n));
                     break;
                 }
 
@@ -172,8 +205,7 @@ public class App {
                     String continent = readText(scanner, "Enter continent name: ");
                     if (continent == null) return;
 
-                    Integer n = readPositiveInt(
-                            scanner, "Enter the number of countries: ");
+                    Integer n = readPositiveInt(scanner, "Enter the number of countries: ");
                     if (n == null) return;
 
                     if (continent.isEmpty() || n < 1) {
@@ -181,9 +213,7 @@ public class App {
                         break;
                     }
 
-                    printCountryResults(
-                            reports.getTopNCountriesInContinentByPopulation(
-                                    db.getConnection(), continent, n));
+                    printCountryResults(reports.getTopNCountriesInContinentByPopulation(con, continent, n));
                     break;
                 }
 
@@ -191,8 +221,7 @@ public class App {
                     String region = readText(scanner, "Enter region name: ");
                     if (region == null) return;
 
-                    Integer n = readPositiveInt(
-                            scanner, "Enter the number of countries: ");
+                    Integer n = readPositiveInt(scanner, "Enter the number of countries: ");
                     if (n == null) return;
 
                     if (region.isEmpty() || n < 1) {
@@ -200,9 +229,7 @@ public class App {
                         break;
                     }
 
-                    printCountryResults(
-                            reports.getTopNCountriesInRegionByPopulation(
-                                    db.getConnection(), region, n));
+                    printCountryResults(reports.getTopNCountriesInRegionByPopulation(con, region, n));
                     break;
                 }
 
@@ -215,12 +242,11 @@ public class App {
         }
     }
 
-    // =========================================================
     // CITY INFORMATION
-    // =========================================================
+    // -------------------------------------------------------
 
     private static void cityMenu(
-            Scanner scanner, DatabaseHandler db, CityReports reports) {
+            Scanner scanner, Connection con, CityReports reports) {
 
         while (true) {
 
@@ -249,17 +275,14 @@ public class App {
             switch (choice) {
 
                 case 1:
-                    printCityResults(
-                            reports.getAllCitiesInWorldByPopulation(db.getConnection()));
+                    printCityResults(reports.getAllCitiesInWorldByPopulation(con));
                     break;
 
                 case 2: {
                     String continent = readText(scanner, "Enter continent name: ");
                     if (continent == null) return;
 
-                    printCityResults(
-                            reports.getCitiesInContinentByPopulation(
-                                    db.getConnection(), continent));
+                    printCityResults(reports.getCitiesInContinentByPopulation(con, continent));
                     break;
                 }
 
@@ -267,9 +290,7 @@ public class App {
                     String region = readText(scanner, "Enter region name: ");
                     if (region == null) return;
 
-                    printCityResults(
-                            reports.getCitiesInRegionByPopulation(
-                                    db.getConnection(), region));
+                    printCityResults(reports.getCitiesInRegionByPopulation(con, region));
                     break;
                 }
 
@@ -277,9 +298,7 @@ public class App {
                     String country = readText(scanner, "Enter country name: ");
                     if (country == null) return;
 
-                    printCityResults(
-                            reports.getCitiesInCountryByPopulation(
-                                    db.getConnection(), country));
+                    printCityResults(reports.getCitiesInCountryByPopulation(con, country));
                     break;
                 }
 
@@ -287,20 +306,16 @@ public class App {
                     String district = readText(scanner, "Enter district name: ");
                     if (district == null) return;
 
-                    printCityResults(
-                            reports.getCitiesInDistrictByPopulation(
-                                    db.getConnection(), district));
+                    printCityResults(reports.getCitiesInDistrictByPopulation(con, district));
                     break;
                 }
 
                 case 6: {
-                    Integer n = readPositiveInt(
-                            scanner, "Enter the number of cities: ");
+                    Integer n = readPositiveInt(scanner, "Enter the number of cities: ");
                     if (n == null) return;
                     if (n < 1) break;
 
-                    printCityResults(
-                            reports.getTopNCitiesWorldwide(db.getConnection(), n));
+                    printCityResults(reports.getTopNCitiesWorldwide(con, n));
                     break;
                 }
 
@@ -308,8 +323,7 @@ public class App {
                     String continent = readText(scanner, "Enter continent name: ");
                     if (continent == null) return;
 
-                    Integer n = readPositiveInt(
-                            scanner, "Enter the number of cities: ");
+                    Integer n = readPositiveInt(scanner, "Enter the number of cities: ");
                     if (n == null) return;
 
                     if (continent.isEmpty() || n < 1) {
@@ -317,9 +331,7 @@ public class App {
                         break;
                     }
 
-                    printCityResults(
-                            reports.getTopNCitiesInContinentByPopulation(
-                                    db.getConnection(), continent, n));
+                    printCityResults(reports.getTopNCitiesInContinentByPopulation(con, continent, n));
                     break;
                 }
 
@@ -327,8 +339,7 @@ public class App {
                     String region = readText(scanner, "Enter region name: ");
                     if (region == null) return;
 
-                    Integer n = readPositiveInt(
-                            scanner, "Enter the number of cities: ");
+                    Integer n = readPositiveInt(scanner, "Enter the number of cities: ");
                     if (n == null) return;
 
                     if (region.isEmpty() || n < 1) {
@@ -336,9 +347,7 @@ public class App {
                         break;
                     }
 
-                    printCityResults(
-                            reports.getTopNCitiesInRegionByPopulation(
-                                    db.getConnection(), region, n));
+                    printCityResults(reports.getTopNCitiesInRegionByPopulation(con, region, n));
                     break;
                 }
 
@@ -346,8 +355,7 @@ public class App {
                     String country = readText(scanner, "Enter country name: ");
                     if (country == null) return;
 
-                    Integer n = readPositiveInt(
-                            scanner, "Enter the number of cities: ");
+                    Integer n = readPositiveInt(scanner, "Enter the number of cities: ");
                     if (n == null) return;
 
                     if (country.isEmpty() || n < 1) {
@@ -356,8 +364,7 @@ public class App {
                     }
 
                     try {
-                        CityReports.printTopNCitiesInCountry(
-                                db.getConnection(), country, n);
+                        CityReports.printTopNCitiesInCountry(con, country, n);
                     } catch (SQLException e) {
                         databaseError(e);
                     }
@@ -368,8 +375,7 @@ public class App {
                     String district = readText(scanner, "Enter district name: ");
                     if (district == null) return;
 
-                    Integer n = readPositiveInt(
-                            scanner, "Enter the number of cities: ");
+                    Integer n = readPositiveInt(scanner, "Enter the number of cities: ");
                     if (n == null) return;
 
                     if (district.isEmpty() || n < 1) {
@@ -378,8 +384,7 @@ public class App {
                     }
 
                     try {
-                        CityReports.printTopNCitiesInDistrict(
-                                db.getConnection(), district, n);
+                        CityReports.printTopNCitiesInDistrict(con, district, n);
                     } catch (SQLException e) {
                         databaseError(e);
                     }
@@ -395,13 +400,12 @@ public class App {
         }
     }
 
-    // =========================================================
     // CAPITAL CITY INFORMATION
-    // =========================================================
+    // -------------------------------------------------------
 
     private static void capitalMenu(
             Scanner scanner,
-            DatabaseHandler db,
+            Connection con,
             CityReports cityReports,
             CapitalCityReports reports) {
 
@@ -428,18 +432,14 @@ public class App {
             switch (choice) {
 
                 case 1:
-                    reports.printResults(
-                            reports.getCapitalCitiesInWorldByPopulation(
-                                    db.getConnection()));
+                    reports.printResults(reports.getCapitalCitiesInWorldByPopulation(con));
                     break;
 
                 case 2: {
                     String continent = readText(scanner, "Enter continent name: ");
                     if (continent == null) return;
 
-                    reports.printResults(
-                            reports.getCapitalCitiesInContinentByPopulation(
-                                    db.getConnection(), continent));
+                    reports.printResults(reports.getCapitalCitiesInContinentByPopulation(con, continent));
                     break;
                 }
 
@@ -447,21 +447,17 @@ public class App {
                     String region = readText(scanner, "Enter region name: ");
                     if (region == null) return;
 
-                    reports.printResults(
-                            reports.getCapitalCitiesInRegionByPopulation(
-                                    db.getConnection(), region));
+                    reports.printResults(reports.getCapitalCitiesInRegionByPopulation(con, region));
                     break;
                 }
 
                 case 4: {
-                    Integer n = readPositiveInt(
-                            scanner, "Enter the number of capital cities: ");
+                    Integer n = readPositiveInt(scanner, "Enter the number of capital cities: ");
                     if (n == null) return;
                     if (n < 1) break;
 
                     try {
-                        CityReports.printTopNCapitalCitiesInWorld(
-                                db.getConnection(), n);
+                        CityReports.printTopNCapitalCitiesInWorld(con, n);
                     } catch (SQLException e) {
                         databaseError(e);
                     }
@@ -472,8 +468,7 @@ public class App {
                     String continent = readText(scanner, "Enter continent name: ");
                     if (continent == null) return;
 
-                    Integer n = readPositiveInt(
-                            scanner, "Enter the number of capital cities: ");
+                    Integer n = readPositiveInt(scanner, "Enter the number of capital cities: ");
                     if (n == null) return;
 
                     if (continent.isEmpty() || n < 1) {
@@ -482,8 +477,7 @@ public class App {
                     }
 
                     try {
-                        CityReports.printTopNCapitalCitiesInContinent(
-                                db.getConnection(), continent, n);
+                        CityReports.printTopNCapitalCitiesInContinent(con, continent, n);
                     } catch (SQLException e) {
                         databaseError(e);
                     }
@@ -494,8 +488,7 @@ public class App {
                     String region = readText(scanner, "Enter region name: ");
                     if (region == null) return;
 
-                    Integer n = readPositiveInt(
-                            scanner, "Enter the number of capital cities: ");
+                    Integer n = readPositiveInt(scanner, "Enter the number of capital cities: ");
                     if (n == null) return;
 
                     if (region.isEmpty() || n < 1) {
@@ -504,8 +497,7 @@ public class App {
                     }
 
                     try {
-                        CityReports.printTopNCapitalCitiesInRegion(
-                                db.getConnection(), region, n);
+                        CityReports.printTopNCapitalCitiesInRegion(con, region, n);
                     } catch (SQLException e) {
                         databaseError(e);
                     }
@@ -521,13 +513,12 @@ public class App {
         }
     }
 
-    // =========================================================
     // POPULATION STATISTICS
-    // =========================================================
+    // -------------------------------------------------------
 
     private static void populationMenu(
             Scanner scanner,
-            DatabaseHandler db,
+            Connection con,
             CountryReports countryReports,
             CityReports cityReports) {
 
@@ -557,28 +548,20 @@ public class App {
             switch (choice) {
 
                 case 1:
-                    printBreakdownResults(
-                            countryReports.getUrbanRuralByContinent(
-                                    db.getConnection()));
+                    printBreakdownResults(countryReports.getUrbanRuralByContinent(con));
                     break;
 
                 case 2:
-                    printBreakdownResults(
-                            countryReports.getUrbanRuralByRegion(
-                                    db.getConnection()));
+                    printBreakdownResults(countryReports.getUrbanRuralByRegion(con));
                     break;
 
                 case 3:
-                    printBreakdownResults(
-                            countryReports.getUrbanRuralByCountry(
-                                    db.getConnection()));
+                    printBreakdownResults(countryReports.getUrbanRuralByCountry(con));
                     break;
 
                 case 4:
                     System.out.println("\nWORLD POPULATION");
-                    System.out.printf("Total Population: %,d%n",
-                            countryReports.getTotalWorldPopulation(
-                                    db.getConnection()));
+                    System.out.printf("Total Population: %,d%n", countryReports.getTotalWorldPopulation(con));
                     break;
 
                 case 5: {
@@ -592,8 +575,7 @@ public class App {
 
                     System.out.printf("\nTotal Population of %s: %,d%n",
                             continent,
-                            countryReports.getTotalPopulationOfContinent(
-                                    db.getConnection(), continent));
+                            countryReports.getTotalPopulationOfContinent(con, continent));
                     break;
                 }
 
@@ -608,8 +590,7 @@ public class App {
 
                     System.out.printf("\nTotal Population of %s: %,d%n",
                             region,
-                            countryReports.getTotalPopulationOfRegion(
-                                    db.getConnection(), region));
+                            countryReports.getTotalPopulationOfRegion(con, region));
                     break;
                 }
 
@@ -624,8 +605,7 @@ public class App {
 
                     System.out.printf("\nTotal Population of %s: %,d%n",
                             country,
-                            countryReports.getTotalPopulationOfCountry(
-                                    db.getConnection(), country));
+                            countryReports.getTotalPopulationOfCountry(con, country));
                     break;
                 }
 
@@ -640,8 +620,7 @@ public class App {
 
                     System.out.printf("\nTotal Population of %s: %,d%n",
                             district,
-                            cityReports.getTotalPopulationOfDistrict(
-                                    db.getConnection(), district));
+                            cityReports.getTotalPopulationOfDistrict(con, district));
                     break;
                 }
 
@@ -654,8 +633,7 @@ public class App {
                         break;
                     }
 
-                    Long population = cityReports.getPopulationOfCity(
-                            db.getConnection(), city);
+                    Long population = cityReports.getPopulationOfCity(con, city);
 
                     if (population == null) {
                         System.out.println("City not found.");
@@ -675,12 +653,11 @@ public class App {
         }
     }
 
-    // =========================================================
     // LANGUAGE STATISTICS
-    // =========================================================
+    // -------------------------------------------------------
 
     private static void languageMenu(
-            Scanner scanner, DatabaseHandler db, LanguageReports reports) {
+            Scanner scanner, Connection con, LanguageReports reports) {
 
         while (true) {
 
@@ -700,7 +677,7 @@ public class App {
             switch (choice) {
 
                 case 1:
-                    reports.printMajorGlobalLanguages(db.getConnection());
+                    reports.printMajorGlobalLanguages(con);
                     break;
 
                 case 0:
@@ -712,9 +689,8 @@ public class App {
         }
     }
 
-    // =========================================================
     // REUSABLE MENU DISPLAY METHODS
-    // =========================================================
+    // ---------------------------------------------------------
 
     private static void printHeader(String title) {
 
@@ -751,9 +727,8 @@ public class App {
         System.out.println("\nInvalid option. Please try again.");
     }
 
-    // =========================================================
     // REUSABLE REPORT DISPLAY METHODS
-    // =========================================================
+    // ------------------------------------------------------
 
     private static void printCountryResults(List<Country> countries) {
 
@@ -813,9 +788,8 @@ public class App {
         }
     }
 
-    // =========================================================
     // INPUT VALIDATION METHODS
-    // =========================================================
+    // ------------------------------------------------------
 
     private static Integer readChoice(Scanner scanner) {
 
@@ -861,7 +835,6 @@ public class App {
     }
 
     private static void databaseError(SQLException e) {
-
         System.out.println("Database error: " + e.getMessage());
     }
 }
