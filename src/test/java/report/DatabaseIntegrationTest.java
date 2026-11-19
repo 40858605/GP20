@@ -3,6 +3,7 @@ package report;
 import com.napier.sem.App;
 import com.napier.sem.Country;
 import com.napier.sem.City;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -14,7 +15,14 @@ public class DatabaseIntegrationTest {
     @BeforeAll
     static void init() {
         app = new App();
-        app.connect("localhost:33060", 30000);
+        app.connect("localhost:3307", 30000);
+    }
+
+    @AfterAll
+    static void cleanup() {
+        if (app != null) {
+            app.disconnect();
+        }
     }
 
     @Test // IT01; Java connects successfully to MySQL
