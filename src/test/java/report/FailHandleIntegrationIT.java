@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class failHandleIntegration {
+public class FailHandleIntegrationIT {
 
     // IT09: Application handles database connection failure
     @Test
