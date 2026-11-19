@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AppIT {
+public class AppIntegrationTest {
 
     // IT09: Application handles database connection failure appropriately
     @Test
