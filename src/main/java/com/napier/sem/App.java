@@ -63,11 +63,22 @@ public class App {
         App a = new App();
 
         // Connect to database using command line arguments or default to localhost
-        if(args.length < 1){
-            a.connect("localhost:33060", 30000);
-        } else {
-            a.connect(args[0], Integer.parseInt(args[1]));
+        String dbHost = System.getenv("DB_HOST");
+        int delay = 1000;
+
+        // Default for local execution
+        if (dbHost == null || dbHost.isEmpty()) {
+            dbHost = "localhost:3307";
         }
+
+        // Allow command-line arguments to override defaults
+        if (args.length >= 1) {
+            dbHost = args[0];
+        }
+        if (args.length >= 2) {
+            delay = Integer.parseInt(args[1]);
+        }
+        a.connect(dbHost, delay);
 
         if (a.con == null) {
             System.out.println("Could not establish a database connection. Exiting...");
