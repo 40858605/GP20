@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AppIntegrationTest {
 
-    private static final String DB_HOST = "localhost:3307";
+    private static final String DB_HOST = "127.0.0.1:3307";
 
     // Helper: run the application with simulated console input
     // and capture everything printed to the console.
@@ -151,6 +151,7 @@ public class AppIntegrationTest {
 
         assertTrue(output.contains("CITY REPORT RESULTS"),
                 "City reports should display results.");
+        assertTrue(output.contains("Top 5 populated cities in Myanmar"));
     }
 
     // Additional Test 3: All Capital City Information menu options
@@ -172,6 +173,12 @@ public class AppIntegrationTest {
 
         assertTrue(output.contains("CAPITAL CITY INFORMATION"),
                 "Capital City menu should be displayed.");
+        assertTrue(output.contains("Capital City"),
+                "Capital city report header should be displayed.");
+        assertTrue(output.contains("Seoul") || output.contains("Jakarta"),
+                "Capital city records should be displayed.");
+        assertTrue(output.contains("Top 5 populated capital cities in the world"),
+                "Top N capital cities report should be displayed.");
     }
 
     // Additional Test 4: All Population Statistics menu options
@@ -228,6 +235,10 @@ public class AppIntegrationTest {
 
         assertTrue(output.contains("Major Global Languages"),
                 "Major Global Languages option should be displayed.");
+        assertTrue(output.contains("% of World Population"),
+                "Language report table header should be displayed.");
+        assertTrue(output.contains("Chinese") && output.contains("English"),
+                "Language report should display major global languages from the database.");
     }
 
     // Additional Test 6: Invalid input, empty input, no results and EOF
