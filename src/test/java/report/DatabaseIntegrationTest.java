@@ -1,5 +1,11 @@
 package report;
 
+/*
+ * Integration tests for database connectivity and data retrieval.
+ * Verifies successful connections to the MySQL database and checks
+ * that country and city records can be retrieved successfully.
+ */
+
 import com.napier.sem.App;
 import com.napier.sem.Country;
 import com.napier.sem.City;

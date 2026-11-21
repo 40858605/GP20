@@ -1,5 +1,12 @@
 package report;
 
+/*
+ * Integration tests for LanguageReports.
+ * Verifies the major global languages report, including language names,
+ * speaker statistics, world population percentages and descending speaker order.
+ * Also tests null database connection handling and the expected console output.
+ */
+
 import com.napier.sem.App;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

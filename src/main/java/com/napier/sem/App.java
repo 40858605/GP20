@@ -1,5 +1,15 @@
 package com.napier.sem;
 
+/*
+ * Main application class for the World Database System.
+ *
+ * Handles database connectivity, user navigation, report selection,
+ * input validation and displaying report results.
+ *
+ * Provides access to country, city, capital city, population
+ * and language statistics using the MySQL World database.
+ */
+
 import report.CountryReports;
 import report.CityReports;
 import report.CapitalCityReports;
@@ -19,7 +29,8 @@ public class App {
     private static final String BORDER = "=".repeat(65);
     private static final String DIVIDER = "-".repeat(65);
 
-    // Dynamic Connect Method
+    // Establishes a MySQL database connection with retry attempts.
+    // Accepts the database host and connection delay as parameters.
     public void connect(String location, int delay) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -47,7 +58,7 @@ public class App {
         }
     }
 
-    // Disconnect Method
+    // Closes the active database connection when the application exits.
     public void disconnect() {
         if (con != null) {
             try {
@@ -58,6 +69,7 @@ public class App {
         }
     }
 
+    //Main method
     public static void main(String[] args) {
 
         App a = new App();
