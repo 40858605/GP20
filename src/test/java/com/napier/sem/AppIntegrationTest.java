@@ -1,5 +1,29 @@
-
 package com.napier.sem;
+
+/*
+ * AppIntegrationTest
+ *
+ * Purpose:
+ * This class performs integration testing of the World Database System
+ * by executing the actual App.main() method and interacting with the
+ * application through simulated console input.
+ *
+ * Testing approach:
+ * - Verifies database connection and disconnection behaviour.
+ * - Tests all five main report categories and their menu options.
+ * - Checks report results retrieved from the MySQL World database.
+ * - Tests invalid inputs, empty values and non-existent records.
+ * - Tests unexpected end-of-input (EOF) in menus and prompts.
+ * - Verifies that the application exits gracefully when errors occur.
+ *
+ * Requirements:
+ * A MySQL World database must be running at 127.0.0.1:3307.
+ * The database should contain the expected World dataset.
+ *
+ * These are integration tests because they test the interaction between
+ * the application, report classes, JDBC connection and database rather
+ * than testing individual methods in isolation.
+ */
 
 import org.junit.jupiter.api.Test;
 
@@ -104,13 +128,13 @@ public class AppIntegrationTest {
 
         String simulatedInput =
                 "1\n" +
-                        "1\n" +                 // All countries worldwide
-                        "2\nAsia\n" +           // Countries by continent
-                        "2\nAtlantis\n" +       // No matching countries
-                        "3\nSoutheast Asia\n" + // Countries by region
-                        "4\n5\n" +              // Top 5 worldwide
-                        "5\nAsia\n5\n" +        // Top 5 in continent
-                        "6\nSoutheast Asia\n5\n" + // Top 5 in region
+                        "1\n" +
+                        "2\nAsia\n" +
+                        "2\nAtlantis\n" +
+                        "3\nSoutheast Asia\n" +
+                        "4\n5\n" +
+                        "5\nAsia\n5\n" +
+                        "6\nSoutheast Asia\n5\n" +
                         "0\n" +
                         "0\n";
 
@@ -132,15 +156,15 @@ public class AppIntegrationTest {
 
         String simulatedInput =
                 "2\n" +
-                        "1\n" +                 // All cities worldwide
-                        "2\nAsia\n" +           // Cities by continent
-                        "3\nSoutheast Asia\n" + // Cities by region
-                        "5\nYangon\n" +         // Cities by district
-                        "6\n5\n" +              // Top 5 worldwide
-                        "7\nAsia\n5\n" +        // Top 5 in continent
-                        "8\nSoutheast Asia\n5\n" + // Top 5 in region
-                        "9\nMyanmar\n5\n" +     // Top 5 in country
-                        "10\nYangon\n5\n" +     // Top 5 in district
+                        "1\n" +
+                        "2\nAsia\n" +
+                        "3\nSoutheast Asia\n" +
+                        "5\nYangon\n" +
+                        "6\n5\n" +
+                        "7\nAsia\n5\n" +
+                        "8\nSoutheast Asia\n5\n" +
+                        "9\nMyanmar\n5\n" +
+                        "10\nYangon\n5\n" +
                         "0\n" +
                         "0\n";
 
@@ -151,6 +175,7 @@ public class AppIntegrationTest {
 
         assertTrue(output.contains("CITY REPORT RESULTS"),
                 "City reports should display results.");
+
         assertTrue(output.contains("Top 5 populated cities in Myanmar"));
     }
 
@@ -160,12 +185,12 @@ public class AppIntegrationTest {
 
         String simulatedInput =
                 "3\n" +
-                        "1\n" +                 // All capital cities
-                        "2\nAsia\n" +           // Capitals by continent
-                        "3\nSoutheast Asia\n" + // Capitals by region
-                        "4\n5\n" +              // Top 5 worldwide
-                        "5\nAsia\n5\n" +        // Top 5 in continent
-                        "6\nSoutheast Asia\n5\n" + // Top 5 in region
+                        "1\n" +
+                        "2\nAsia\n" +
+                        "3\nSoutheast Asia\n" +
+                        "4\n5\n" +
+                        "5\nAsia\n5\n" +
+                        "6\nSoutheast Asia\n5\n" +
                         "0\n" +
                         "0\n";
 
@@ -173,10 +198,13 @@ public class AppIntegrationTest {
 
         assertTrue(output.contains("CAPITAL CITY INFORMATION"),
                 "Capital City menu should be displayed.");
+
         assertTrue(output.contains("Capital City"),
                 "Capital city report header should be displayed.");
+
         assertTrue(output.contains("Seoul") || output.contains("Jakarta"),
                 "Capital city records should be displayed.");
+
         assertTrue(output.contains("Top 5 populated capital cities in the world"),
                 "Top N capital cities report should be displayed.");
     }
@@ -187,16 +215,16 @@ public class AppIntegrationTest {
 
         String simulatedInput =
                 "4\n" +
-                        "1\n" +                 // Breakdown by continent
-                        "2\n" +                 // Breakdown by region
-                        "3\n" +                 // Breakdown by country
-                        "4\n" +                 // Worldwide population
-                        "5\nAsia\n" +           // Continent population
-                        "6\nSoutheast Asia\n" + // Region population
-                        "7\nMyanmar\n" +        // Country population
-                        "8\nYangon\n" +         // District population
-                        "9\nYangon\n" +         // Existing city
-                        "9\nDefinitelyNotACity123\n" + // Nonexistent city
+                        "1\n" +
+                        "2\n" +
+                        "3\n" +
+                        "4\n" +
+                        "5\nAsia\n" +
+                        "6\nSoutheast Asia\n" +
+                        "7\nMyanmar\n" +
+                        "8\nYangon\n" +
+                        "9\nYangon\n" +
+                        "9\nDefinitelyNotACity123\n" +
                         "0\n" +
                         "0\n";
 
@@ -224,7 +252,7 @@ public class AppIntegrationTest {
 
         String simulatedInput =
                 "5\n" +
-                        "1\n" + // Major Global Languages
+                        "1\n" +
                         "0\n" +
                         "0\n";
 
@@ -235,8 +263,10 @@ public class AppIntegrationTest {
 
         assertTrue(output.contains("Major Global Languages"),
                 "Major Global Languages option should be displayed.");
+
         assertTrue(output.contains("% of World Population"),
                 "Language report table header should be displayed.");
+
         assertTrue(output.contains("Chinese") && output.contains("English"),
                 "Language report should display major global languages from the database.");
     }
@@ -246,34 +276,10 @@ public class AppIntegrationTest {
     void testInvalidInputsAndEdgeCases() {
 
         String simulatedInput =
-                "99\n" +     // Invalid main menu option
-                        "abc\n" +    // Non-numeric main menu input
+                "99\n" +
+                        "abc\n" +
 
-                        "1\n" +      // Country menu
-                        "99\n" +     // Invalid country menu option
-                        "2\n\n" +    // Empty continent
-                        "3\n\n" +    // Empty region
-                        "4\n0\n" +   // Zero Top N
-                        "4\n-1\n" +  // Negative Top N
-                        "5\n\n5\n" + // Empty continent in Top N
-                        "6\n\n5\n" + // Empty region in Top N
-                        "0\n" +
-
-                        "2\n" +      // City menu
-                        "99\n" +
-                        "2\n\n" +    // Empty continent
-                        "3\n\n" +    // Empty region
-                        "4\nDefinitelyNotACountry123\n" +
-                        "5\n\n" +    // Empty district
-                        "6\n0\n" +   // Zero Top N
-                        "6\n-1\n" +  // Negative Top N
-                        "7\n\n5\n" +
-                        "8\n\n5\n" +
-                        "9\n\n5\n" +
-                        "10\n\n5\n" +
-                        "0\n" +
-
-                        "3\n" +      // Capital menu
+                        "1\n" +
                         "99\n" +
                         "2\n\n" +
                         "3\n\n" +
@@ -283,7 +289,31 @@ public class AppIntegrationTest {
                         "6\n\n5\n" +
                         "0\n" +
 
-                        "4\n" +      // Population menu
+                        "2\n" +
+                        "99\n" +
+                        "2\n\n" +
+                        "3\n\n" +
+                        "4\nDefinitelyNotACountry123\n" +
+                        "5\n\n" +
+                        "6\n0\n" +
+                        "6\n-1\n" +
+                        "7\n\n5\n" +
+                        "8\n\n5\n" +
+                        "9\n\n5\n" +
+                        "10\n\n5\n" +
+                        "0\n" +
+
+                        "3\n" +
+                        "99\n" +
+                        "2\n\n" +
+                        "3\n\n" +
+                        "4\n0\n" +
+                        "4\n-1\n" +
+                        "5\n\n5\n" +
+                        "6\n\n5\n" +
+                        "0\n" +
+
+                        "4\n" +
                         "99\n" +
                         "5\n\n" +
                         "6\n\n" +
@@ -293,11 +323,11 @@ public class AppIntegrationTest {
                         "9\nDefinitelyNotACity123\n" +
                         "0\n" +
 
-                        "5\n" +      // Language menu
+                        "5\n" +
                         "99\n" +
                         "0\n" +
 
-                        "0\n";       // Exit application
+                        "0\n";
 
         String output = runApplication(simulatedInput);
 
@@ -331,5 +361,89 @@ public class AppIntegrationTest {
         assertTrue(eofOutput.contains(
                         "No interactive input detected. Exiting..."),
                 "Application should handle unexpected end of input.");
+    }
+
+    // Additional Test 7: EOF inside each submenu
+    // Explanation:
+    // Checks whether the application handles unexpected end-of-input
+    // after entering each report category without crashing.
+    @Test
+    void testEOFInsideSubmenus() {
+
+        String[] simulatedInputs = {
+                "1\n", // Country menu
+                "2\n", // City menu
+                "3\n", // Capital menu
+                "4\n", // Population menu
+                "5\n"  // Language menu
+        };
+
+        for (String input : simulatedInputs) {
+
+            String output = runApplication(input);
+
+            assertTrue(output.contains(
+                            "No interactive input detected. Exiting..."),
+                    "Application should handle EOF inside every submenu.");
+        }
+    }
+
+    // Additional Test 8: EOF while requesting additional information
+    // Explanation:
+    // Checks that the application returns safely when the user stops
+    // providing input after selecting a report that requires more details.
+    @Test
+    void testEOFWhileRequestingDetails() {
+
+        String[] simulatedInputs = {
+                "1\n2\n", // Country: continent
+                "1\n4\n", // Country: Top N
+                "1\n5\n", // Country: continent and Top N
+                "1\n6\n", // Country: region and Top N
+
+                "2\n2\n", // City: continent
+                "2\n4\n", // City: country
+                "2\n6\n", // City: Top N
+                "2\n9\n", // City: country and Top N
+
+                "3\n2\n", // Capital: continent
+                "3\n4\n", // Capital: Top N
+                "3\n5\n", // Capital: continent and Top N
+
+                "4\n5\n", // Population: continent
+                "4\n9\n"  // Population: city
+        };
+
+        for (String input : simulatedInputs) {
+
+            String output = runApplication(input);
+
+            assertTrue(output.contains(
+                            "No interactive input detected. Exiting..."),
+                    "Application should handle EOF while requesting report details.");
+        }
+    }
+
+    // Additional Test 9: Non-numeric Top N input
+    // Explanation:
+    // Checks that entering text instead of a positive integer does not
+    // crash the application and that the invalid value is rejected.
+    @Test
+    void testNonNumericTopNInput() {
+
+        String simulatedInput =
+                "1\n" +
+                        "4\n" +
+                        "abc\n" +
+                        "0\n" +
+                        "0\n";
+
+        String output = runApplication(simulatedInput);
+
+        assertTrue(output.contains("Please enter a number greater than zero."),
+                "Non-numeric Top N input should be rejected.");
+
+        assertTrue(output.contains("Thank you for using World Database System!"),
+                "Application should continue and exit normally after invalid Top N input.");
     }
 }
