@@ -53,8 +53,11 @@ public class PopulationBreakdown {
         this.cityPopulation = cityPopulation;
     }
 
+    // Calculates the city population percentage.
     public double getCityPercentage() {
-        return cityPercentage;
+        return totalPopulation > 0
+                ? ((double) cityPopulation / totalPopulation) * 100
+                : 0.0;
     }
 
     public long getRuralPopulation() {
@@ -65,7 +68,10 @@ public class PopulationBreakdown {
         this.ruralPopulation = ruralPopulation;
     }
 
+    // Calculates the rural population percentage.
     public double getRuralPercentage() {
-        return ruralPercentage;
+        return totalPopulation > 0
+                ? ((double) ruralPopulation / totalPopulation) * 100
+                : 0.0;
     }
 }
