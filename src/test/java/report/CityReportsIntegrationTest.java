@@ -1,5 +1,12 @@
 package report;
 
+/*
+ * Integration tests for CityReports.
+ * Verifies worldwide, continent, region, country and district city reports,
+ * including population rankings, capital city reports and population lookups.
+ * Also tests invalid filters, null database connections and formatted console output.
+ */
+
 import com.napier.sem.App;
 import com.napier.sem.City;
 import org.junit.jupiter.api.AfterAll;

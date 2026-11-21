@@ -1,5 +1,13 @@
 package report;
 
+/*
+ * Integration tests for CountryReports.
+ * Verifies country reports worldwide, by continent and by region,
+ * including top N rankings and urban-rural population breakdowns.
+ * Also tests total population calculations, invalid filters,
+ * null database connections and formatted console output.
+ */
+
 import com.napier.sem.App;
 import com.napier.sem.Country;
 import com.napier.sem.PopulationBreakdown;

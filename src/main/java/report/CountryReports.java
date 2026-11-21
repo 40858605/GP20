@@ -1,5 +1,12 @@
 package report;
 
+/*
+ * Handles database queries and report generation for countries.
+ * Provides population reports for the world, continents and regions,
+ * including top N country rankings and urban-rural population breakdowns.
+ * Also provides total population statistics and formatted result display.
+ */
+
 import com.napier.sem.Country;
 import com.napier.sem.PopulationBreakdown;
 

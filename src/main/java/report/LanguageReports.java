@@ -1,5 +1,11 @@
 package report;
 
+/*
+ * Handles database queries and reporting for major global languages.
+ * Calculates the estimated number of speakers and their percentage
+ * of the total world population.
+ */
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,12 +14,14 @@ import java.sql.Statement;
 public class LanguageReports {
 
     // Issue #34: Report on major global languages (Chinese, English, Hindi, Spanish, Arabic) (winhponeemyat202104-del)
+    // Check whether the database connection is available.
     public void printMajorGlobalLanguages(Connection con) {
         if (con == null) {
             System.out.println("Database connection is not available.");
             return;
         }
 
+        // Calculate estimated speakers and their percentage of the world population.
         String sql = """
                 SELECT cl.Language,
                        ROUND(SUM(c.Population * (cl.Percentage / 100.0))) AS Speakers,
@@ -34,6 +42,7 @@ public class LanguageReports {
             System.out.println("---------------------------------------------------------");
 
             while (rset.next()) {
+                // Retrieve language statistics from the current database row.
                 String language = rset.getString("Language");
                 long speakers = rset.getLong("Speakers");
                 double worldPercentage = rset.getDouble("WorldPercentage");

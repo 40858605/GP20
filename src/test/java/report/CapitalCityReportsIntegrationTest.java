@@ -1,5 +1,12 @@
 package report;
 
+/*
+ * Integration tests for CapitalCityReports.
+ * Verifies capital city reports worldwide, by continent and by region,
+ * including population ordering, invalid filters, null connections
+ * and formatted console output using the database.
+ */
+
 import com.napier.sem.App;
 import com.napier.sem.City;
 import org.junit.jupiter.api.AfterAll;

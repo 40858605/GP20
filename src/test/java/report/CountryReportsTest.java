@@ -1,5 +1,13 @@
 package report;
 
+/*
+ * Unit tests for CountryReports.
+ * Verifies database report methods handle null connections correctly,
+ * including country reports, population breakdowns and population calculations.
+ * Also tests printResults() with null, empty, normal and null-containing lists
+ * to ensure the methods handle edge cases without crashing.
+ */
+
 import com.napier.sem.Country;
 import com.napier.sem.PopulationBreakdown;
 import org.junit.jupiter.api.BeforeAll;

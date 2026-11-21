@@ -1,5 +1,12 @@
 package report;
 
+/*
+ * Handles database queries and report generation for cities.
+ * Provides reports for worldwide cities, continents, regions,
+ * countries and districts, including population rankings.
+ * Also provides population lookup and formatted result display.
+ */
+
 import com.napier.sem.City;
 
 import java.sql.Connection;

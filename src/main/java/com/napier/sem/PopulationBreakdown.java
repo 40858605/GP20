@@ -1,5 +1,11 @@
 package com.napier.sem;
 
+/*
+ * Represents population statistics for a continent, region or country.
+ * Stores total population, urban population, rural population
+ * and their respective percentages.
+ */
+
 public class PopulationBreakdown {
     private String name;
     private long totalPopulation;
@@ -21,5 +27,45 @@ public class PopulationBreakdown {
     public String toString() {
         return String.format("%-30s %-15d %-15d (%-5.2f%%) %-15d (%-5.2f%%)",
                 name, totalPopulation, cityPopulation, cityPercentage, ruralPopulation, ruralPercentage);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getTotalPopulation() {
+        return totalPopulation;
+    }
+
+    public void setTotalPopulation(long totalPopulation) {
+        this.totalPopulation = totalPopulation;
+    }
+
+    public long getCityPopulation() {
+        return cityPopulation;
+    }
+
+    public void setCityPopulation(long cityPopulation) {
+        this.cityPopulation = cityPopulation;
+    }
+
+    public double getCityPercentage() {
+        return cityPercentage;
+    }
+
+    public long getRuralPopulation() {
+        return ruralPopulation;
+    }
+
+    public void setRuralPopulation(long ruralPopulation) {
+        this.ruralPopulation = ruralPopulation;
+    }
+
+    public double getRuralPercentage() {
+        return ruralPercentage;
     }
 }

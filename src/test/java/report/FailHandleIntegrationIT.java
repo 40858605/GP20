@@ -1,5 +1,12 @@
-
 package report;
+
+/*
+ * Integration tests for application failure handling.
+ * Verifies that the application handles database connection failures
+ * correctly when the MySQL database is unavailable.
+ * Ensures that an unsuccessful connection attempt leaves the
+ * database connection null.
+ */
 
 import com.napier.sem.App;
 import org.junit.jupiter.api.Test;

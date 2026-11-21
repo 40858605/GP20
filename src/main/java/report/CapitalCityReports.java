@@ -1,5 +1,11 @@
 package report;
 
+/*
+ * Handles database queries and report generation for capital cities.
+ * Provides reports for worldwide capital cities, continents and regions,
+ * including population rankings and formatted result display.
+ */
+
 import com.napier.sem.City;
 
 import java.sql.Connection;
