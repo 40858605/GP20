@@ -1,38 +1,47 @@
----
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
 
 ---
+name: Bug Report
+about: Report a bug or unexpected behaviour in the World Database application
+title: "[BUG] "
+labels: bug
+assignees: ""
+---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## 1. Bug Description
+Briefly describe the problem.
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+## 2. Steps to Reproduce
+Explain how to reproduce the issue.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+1.
+2.
+3.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## 3. Expected Behaviour
+What should happen when performing this action?
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+## 4. Actual Behaviour
+What actually happens?
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+## 5. Testing Information
+- Test Type: (Unit / Integration / Manual)
+- Report or Feature:
+- Test Case ID (if applicable):
 
-**Additional context**
-Add any other context about the problem here.
+## 6. Environment
+- Operating System:
+- Java Version:
+- Database:
+- Application Version / Branch:
+
+## 7. Evidence
+Attach relevant screenshots, error messages, console output, or test results.
+
+## 8. Severity
+- [ ] Critical
+- [ ] High
+- [ ] Medium
+- [ ] Low
+
+## 9. Additional Information
+Any other relevant details.
