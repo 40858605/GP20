@@ -2,15 +2,14 @@ name: Bug Report
 description: File a bug report.
 title: "[Bug]: "
 labels: ["bug", "triage"]
-projects: ["octo-org/1", "octo-org/44"]
 assignees:
 - octocat
-  type: bug
   body:
 - type: markdown
   attributes:
   value: |
   Thanks for taking the time to fill out this bug report!
+
 - type: input
   id: contact
   attributes:
@@ -19,6 +18,7 @@ assignees:
   placeholder: ex. email@example.com
   validations:
   required: false
+
 - type: textarea
   id: what-happened
   attributes:
@@ -28,6 +28,7 @@ assignees:
   value: "A bug happened!"
   validations:
   required: true
+
 - type: dropdown
   id: version
   attributes:
@@ -39,6 +40,7 @@ assignees:
   default: 0
   validations:
   required: true
+
 - type: dropdown
   id: browsers
   attributes:
@@ -49,12 +51,22 @@ assignees:
   - Chrome
   - Safari
   - Microsoft Edge
+
 - type: textarea
   id: logs
   attributes:
   label: Relevant log output
   description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
   render: shell
+
+- type: textarea
+  id: screenshots
+  attributes:
+  label: Screenshots
+  description: If applicable, drag and drop or paste screenshots here to help explain your problem.
+  validations:
+  required: false
+
 - type: checkboxes
   id: terms
   attributes:
@@ -63,10 +75,3 @@ assignees:
   options:
   - label: I agree to follow this project's Code of Conduct
   required: true
-- type: upload
-  id: screenshots
-  attributes:
-  label: Upload screenshots
-  description: If applicable, add screenshots to help explain your problem.
-  validations:
-  required: false
