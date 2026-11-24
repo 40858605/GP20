@@ -79,3 +79,15 @@ jobs:
       - name: Stop Docker Compose
         if: always()
         run: docker compose down -v
+
+      - name: Publish JAR to GitHub Releases
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Build
+          make_latest: true
+          generate_release_notes: true
+          files: target/assessment_1-1.0-SNAPSHOT-jar-with-dependencies.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
