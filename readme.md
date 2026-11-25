@@ -5,7 +5,7 @@
 [![Release](https://img.shields.io/github/v/release/40858605/GP20?include_prereleases)](https://github.com/40858605/GP20/releases)
 [![Master Status](https://img.shields.io/github/actions/workflow/status/40858605/GP20/main.yml?branch=master&label=master%20status)](https://github.com/40858605/GP20/actions/workflows/main.yml?query=branch%3Amaster)
 [![Develop Status](https://img.shields.io/github/actions/workflow/status/40858605/GP20/main.yml?branch=develop&label=develop%20status)](https://github.com/40858605/GP20/actions/workflows/main.yml?query=branch%3Adevelop)
-![Code Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)
+![Code Coverage](.github/badges/jacoco.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 ---
