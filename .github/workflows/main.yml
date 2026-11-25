@@ -31,19 +31,8 @@
           # Skip integration tests because the database is not running yet
           run: mvn test -Dtest="*Test,!*IntegrationTest"
 
-        - name: Generate JaCoCo Coverage Report
-          run: mvn org.jacoco:jacoco-maven-plugin:0.8.13:report
-
-        - name: Upload Coverage to Codecov
-          uses: codecov/codecov-action@v5
-          with:
-            files: target/site/jacoco/jacoco.xml
-            token: ${{ secrets.CODECOV_TOKEN }}
-            flags: unittests
-            name: world-database-coverage
-
     IntegrationTests:
-      name: Integration Tests
+      name: Integration Tests & Combined Coverage
       runs-on: ubuntu-latest
       needs: UnitTests
 
@@ -60,12 +49,29 @@
             distribution: temurin
             cache: maven
 
-        - name: Start Database & Run Integration Tests
+        - name: Start Database
           run: |
             docker compose up -d db
             sleep 20
-            mvn test -Dtest="*IntegrationTest"
-            docker compose down -v
+
+        - name: Run All Tests with Coverage
+          # Run unit and integration tests together with JaCoCo enabled
+          run: mvn test -Dtest="*Test"
+
+        - name: Generate Combined JaCoCo Coverage Report
+          run: mvn org.jacoco:jacoco-maven-plugin:0.8.13:report
+
+        - name: Upload Combined Coverage to Codecov
+          uses: codecov/codecov-action@v5
+          with:
+            files: target/site/jacoco/jacoco.xml
+            token: ${{ secrets.CODECOV_TOKEN }}
+            flags: combined
+            name: world-database-combined-coverage
+
+        - name: Stop Database
+          if: always()
+          run: docker compose down -v
 
     build:
       name: Build & Test via Docker Compose
