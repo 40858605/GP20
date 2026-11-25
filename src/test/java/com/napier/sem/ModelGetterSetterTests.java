@@ -124,4 +124,16 @@ public class ModelGetterSetterTests {
         assertEquals(1200000000L, language.getTotalSpeakers());
         assertEquals(15.0, language.getWorldPercentage(), 0.01);
     }
+
+    @Test
+    void testPopulationBreakdownZeroTotalPopulation() {
+
+        PopulationBreakdown breakdown = new PopulationBreakdown(
+                "Antarctica", 0, 0, 0
+        );
+
+        // Verify zero population percentage calculations
+        assertEquals(0.0, breakdown.getCityPercentage(), 0.01);
+        assertEquals(0.0, breakdown.getRuralPercentage(), 0.01);
+    }
 }
