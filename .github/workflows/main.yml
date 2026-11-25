@@ -29,7 +29,7 @@
 
         - name: Run Unit Tests
           # Skip integration tests because the database is not running yet
-          run: mvn test -Dtest="*Test,!*IntegrationTest"
+          run: mvn test -Dtest="*Test,*Tests,!*IntegrationTest"
 
     IntegrationTests:
       name: Integration Tests & Combined Coverage
@@ -56,7 +56,7 @@
 
         - name: Run All Tests with Coverage
           # Run unit and integration tests together with JaCoCo enabled
-          run: mvn test -Dtest="*Test"
+          run: mvn test -Dtest="*Test,*Tests"
 
         - name: Generate Combined JaCoCo Coverage Report
           run: mvn org.jacoco:jacoco-maven-plugin:0.8.13:report
