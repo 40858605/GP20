@@ -46,10 +46,6 @@
         - name: Commit Coverage Badges
           if: github.event_name == 'push'
           run: |
-            mkdir -p .github/badges
-            cp coverage.svg .github/badges/
-            cp branches.svg .github/badges/
-            
             git config user.name github-actions[bot]
             git config user.email 41898282+github-actions[bot]@users.noreply.github.com
             
