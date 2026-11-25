@@ -34,27 +34,13 @@
         - name: Generate JaCoCo Coverage Report
           run: mvn org.jacoco:jacoco-maven-plugin:0.8.13:report
 
-        - name: Generate Coverage Badge
-          uses: cicirello/jacoco-badge-generator@v2
+        - name: Upload Coverage to Codecov
+          uses: codecov/codecov-action@v5
           with:
-            jacoco-csv-file: target/site/jacoco/jacoco.csv
-            generate-coverage-badge: true
-            generate-branches-badge: true
-            coverage-badge-filename: coverage.svg
-            branches-badge-filename: branches.svg
-
-        - name: Commit Coverage Badges
-          if: github.event_name == 'push'
-          run: |
-            git config user.name github-actions[bot]
-            git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-            
-            git add .github/badges/
-            
-            if ! git diff --cached --quiet; then
-              git commit -m "Update coverage badges"
-              git push
-            fi
+            files: target/site/jacoco/jacoco.xml
+            token: ${{ secrets.CODECOV_TOKEN }}
+            flags: unittests
+            name: world-database-coverage
 
     IntegrationTests:
       name: Integration Tests
